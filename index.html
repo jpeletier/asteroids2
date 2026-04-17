@@ -181,6 +181,7 @@
         }
 
         function init() {
+            entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null };
             entities.players = [
                 new Ship(canvas.width * 0.3, canvas.height * 0.5, '#00ffcc', { thrust: 'KeyW', rotateLeft: 'KeyA', rotateRight: 'KeyD', shoot: 'Space' }),
                 new Ship(canvas.width * 0.7, canvas.height * 0.5, '#ff00ff', { thrust: 'ArrowUp', rotateLeft: 'ArrowLeft', rotateRight: 'ArrowRight', shoot: 'Enter' })
