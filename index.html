@@ -347,9 +347,10 @@
             if (entities.boss) entities.boss.update();
             if (entities.shieldPowerup) entities.shieldPowerup.update();
 
-            if (entities.shieldPowerup) {
+            const powerup = entities.shieldPowerup;
+            if (powerup) {
                 entities.players.forEach(p => {
-                    if (Math.hypot(p.x - entities.shieldPowerup.x, p.y - entities.shieldPowerup.y) < p.radius + entities.shieldPowerup.radius) {
+                    if (Math.hypot(p.x - powerup.x, p.y - powerup.y) < p.radius + powerup.radius) {
                         p.shieldTime = 2400; 
                         explode(p.x, p.y, '#0f0', 20);
                         entities.shieldPowerup = null;
