@@ -38,6 +38,8 @@
         let wave = 1;
         let gameState = 'playing'; // playing, boss, win, lose
         let entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [] };
+        let lastAlienSpawnTime = 0;
+        const ALIEN_SPAWN_INTERVAL = 15000; // Try to spawn every 15s if not already present
 
         class Particle {
             constructor(x, y, color) {
@@ -108,7 +110,7 @@
 
         class AlienShip {
             constructor() {
-                this.x = Math.random() * canvas.width;
+                this.x = Math.random() < 0.5 ? -20 : canvas.width + 20;
                 this.y = Math.random() * canvas.height;
                 this.radius = 15;
                 this.color = '#ffaa00';
@@ -119,13 +121,14 @@
             }
             update() {
                 this.x += this.vx; this.y += this.vy;
-                if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
+                if (this.x < -this.radius * 2) this.x = canvas.width + this.radius * 2;
+                if (this.x > canvas.width + this.radius * 2) this.x = -this.radius * 2;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
                 this.angle += 0.05;
 
                 this.shootCooldown--;
                 if (this.shootCooldown <= 0) {
-                    // Try to shoot at the nearest player
                     let target = null;
                     let minDist = Infinity;
                     entities.players.forEach(p => {
@@ -138,7 +141,7 @@
                         entities.bullets.push(new Bullet(this.x, this.y, angleToPlayer, this.color, 'alien'));
                         this.shootCooldown = 80 + Math.random() * 40;
                     } else {
-                        this.shootCooldown = 40; // Idle shooting
+                        this.shootCooldown = 60;
                     }
                 }
             }
@@ -223,10 +226,6 @@
                 } while (Math.hypot(x - canvas.width/2, y - canvas.height/2) < 200);
                 entities.asteroids.push(new Asteroid(x, y, 40, 3));
             }
-            // Chance to spawn an alien ship
-            if (Math.random() < 0.3) {
-                entities.aliens.push(new AlienShip());
-            }
         }
 
         function explode(x, y, color, count = 10) {
@@ -245,10 +244,19 @@
             scoreEl.innerText = `Score: ${score}`;
             waveEl.innerText = `Wave: ${wave}`;
             msgEl.innerText = '';
+            lastAlienSpawnTime = Date.now();
         }
 
         function update() {
             if (gameState !== 'playing' && gameState !== 'boss') return;
+
+            const now = Date.now();
+
+            // Spawning logic: Periodic Alien Ships if not already too many
+            if (gameState === 'playing' && now - lastAlienSpawnTime > ALIEN_SPAWN_INTERVAL && entities.aliens.length < 3) {
+                entities.aliens.push(new AlienShip());
+                lastAlienSpawnTime = now;
+            }
 
             entities.players.forEach(p => p.update());
             entities.bullets.forEach(b => b.update());
