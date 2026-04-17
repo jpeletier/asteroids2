@@ -39,7 +39,7 @@
         let gameState = 'playing'; // playing, boss, win, lose
         let entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [] };
         let lastAlienSpawnTime = 0;
-        const ALIEN_SPAWN_INTERVAL = 15000; // Try to spawn every 15s if not already present
+        const ALIEN_SPAWN_INTERVAL = 15000; 
 
         class Particle {
             constructor(x, y, color) {
@@ -127,8 +127,35 @@
                 if (this.y > canvas.height) this.y = 0;
                 this.angle += 0.05;
 
+                // Evasive maneuvers or attacking asteroids
+                let closestAsteroid = null;
+                let minDistAst = Infinity;
+                entities.asteroids.forEach(a => {
+                    const d = Math.hypot(this.x - a.x, this.y - a.y);
+                    if (d < minDistAst) { minDistAst = d; closestAsteroid = a; }
+                });
+
+                // If close to an asteroid, try to avoid or shoot it
+                if (closestAsteroid && minDistAst < 60) {
+                    const angleToAst = Math.atan2(closestAsteroid.y - this.y, closestAsteroid.x - this.x);
+                    
+                    // 50% chance to try and steer away, 50% to shoot it
+                    if (Math.random() < 0.5) {
+                        // Avoid
+                        this.vx += Math.cos(angleToAst + Math.PI) * 0.1;
+                        this.vy += Math.sin(angleToAst + Math.PI) * 0.1;
+                    } else {
+                        // Shoot
+                        if (this.shootCooldown <= 0) {
+                            entities.bullets.push(new Bullet(this.x, this.y, angleToAst, this.color, 'alien'));
+                            this.shootCooldown = 30;
+                        }
+                    }
+                }
+
                 this.shootCooldown--;
                 if (this.shootCooldown <= 0) {
+                    // Attack players
                     let target = null;
                     let minDist = Infinity;
                     entities.players.forEach(p => {
@@ -252,7 +279,7 @@
 
             const now = Date.now();
 
-            // Spawning logic: Periodic Alien Ships if not already too many
+            // Spawning logic: Periodic Alien Ships
             if (gameState === 'playing' && now - lastAlienSpawnTime > ALIEN_SPAWN_INTERVAL && entities.aliens.length < 3) {
                 entities.aliens.push(new AlienShip());
                 lastAlienSpawnTime = now;
@@ -324,6 +351,19 @@
                         }
                     });
                 }
+            });
+
+            // Collision: Alien Ship vs Asteroid (CRASH!)
+            entities.aliens.forEach((al, ai) => {
+                entities.asteroids.forEach((a, ai2) => {
+                    if (Math.hypot(al.x - a.x, al.y - a.y) < al.radius + a.radius) {
+                        explode(al.x, al.y, al.color, 20);
+                        entities.aliens.splice(ai, 1);
+                        entities.asteroids.splice(ai2, 1);
+                        score += 100;
+                        scoreEl.innerText = `Score: ${score}`;
+                    }
+                });
             });
 
             // Collision: Players vs Asteroids
