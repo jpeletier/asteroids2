@@ -274,8 +274,14 @@
                 this.laserTimer = 0;
             }
             update() {
+                const prevAngle = this.angle;
                 if (keys[this.controls.rotateLeft]) this.angle -= 0.07;
                 if (keys[this.controls.rotateRight]) this.angle += 0.07;
+                
+                if (this.isFiringLaser && this.angle !== prevAngle) {
+                    this.isFiringLaser = false;
+                }
+
                 if (keys[this.controls.thrust]) {
                     this.vx += Math.cos(this.angle) * 0.2;
                     this.vy += Math.sin(this.angle) * 0.2;
@@ -302,7 +308,9 @@
 
                 if (this.isFiringLaser) {
                     this.laserTimer--;
-                    if (this.laserTimer <= 0) this.isFiringLaser = false;
+                    if (this.laserTimer <= 0) {
+                        this.isFiringLaser = false;
+                    }
                 }
 
                 if (this.shieldTime > 0) {
