@@ -470,6 +470,8 @@
                 entities.asteroids.forEach(a => {
                     if (Math.hypot(p.x - a.x, p.y - a.y) < a.radius + p.radius) {
                         if (p.shieldTime > 0) {
+                            // Shield takes damage from asteroid
+                            p.shieldTime = Math.max(0, p.shieldTime - (5 * 60));
                             explode(a.x, a.y, '#aaa');
                             entities.asteroids.splice(entities.asteroids.indexOf(a), 1);
                             score += 10 * a.level;
