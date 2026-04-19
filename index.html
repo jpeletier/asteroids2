@@ -37,12 +37,15 @@
         let score = 0;
         let wave = 1;
         let gameState = 'playing'; // playing, boss, win, lose
-        let entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null };
+        let entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null };
         let lastAlienSpawnTime = 0;
         let lastShieldSpawnTime = 0;
+        let lastLaserSpawnTime = 0;
         const ALIEN_SPAWN_INTERVAL = 15000; 
         const SHIELD_SPAWN_CHANCE = 0.7; 
         const SHIELD_SPAWN_INTERVAL = 10000;
+        const LASER_SPAWN_CHANCE = 0.3;
+        const LASER_SPAWN_INTERVAL = 15000;
 
         class Particle {
             constructor(x, y, color) {
@@ -135,6 +138,33 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('S', this.x, this.y);
+            }
+        }
+
+        class LaserPowerup {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = 15;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = (Math.random() - 0.5) * 1;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.strokeStyle = '#f00';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = '#f00';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('L', this.x, this.y);
             }
         }
 
@@ -239,6 +269,9 @@
                 this.controls = controls; this.friction = 0.98;
                 this.shootCooldown = 0;
                 this.shieldTime = 0; 
+                this.laserShots = 0;
+                this.isFiringLaser = false;
+                this.laserTimer = 0;
             }
             update() {
                 if (keys[this.controls.rotateLeft]) this.angle -= 0.07;
@@ -253,33 +286,111 @@
                 if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
 
                 if (this.shootCooldown > 0) this.shootCooldown--;
+                
                 if (keys[this.controls.shoot] && this.shootCooldown <= 0) {
-                    entities.bullets.push(new Bullet(this.x, this.y, this.angle, this.color, 'player'));
-                    this.shootCooldown = 15;
+                    if (this.laserShots > 0) {
+                        this.isFiringLaser = true;
+                        this.laserTimer = 200; // 200ms
+                        this.laserShots--;
+                        this.shootCooldown = 15;
+                        this.fireLaser();
+                    } else {
+                        entities.bullets.push(new Bullet(this.x, this.y, this.angle, this.color, 'player'));
+                        this.shootCooldown = 15;
+                    }
+                }
+
+                if (this.isFiringLaser) {
+                    this.laserTimer--;
+                    if (this.laserTimer <= 0) this.isFiringLaser = false;
                 }
 
                 if (this.shieldTime > 0) {
                     this.shieldTime--;
                 }
             }
+
+            fireLaser() {
+                const laserLen = 1000;
+                const laserXEnd = this.x + Math.cos(this.angle) * laserLen;
+                const laserYEnd = this.y + Math.sin(this.angle) * laserLen;
+
+                // Collision with Asteroids
+                entities.asteroids.forEach((a, ai) => {
+                    const dist = this.distToSegment({x: a.x, y: a.y}, {x: this.x, y: this.y}, {x: laserXEnd, y: laserYEnd});
+                    if (dist < a.radius) {
+                        explode(a.x, a.y, '#aaa');
+                        if (a.level > 1) {
+                            entities.asteroids.push(new Asteroid(a.x, a.y, a.radius / 2, a.level - 1));
+                            entities.asteroids.push(new Asteroid(a.x, a.y, a.radius / 2, a.level - 1));
+                        }
+                        entities.asteroids.splice(entities.asteroids.indexOf(a), 1);
+                        score += 10 * a.level;
+                        scoreEl.innerText = `Score: ${score}`;
+                    }
+                });
+
+                // Collision with Aliens
+                entities.aliens.forEach((al, ai) => {
+                    const dist = this.distToSegment({x: al.x, y: al.y}, {x: this.x, y: this.y}, {x: laserXEnd, y: laserYEnd});
+                    if (dist < al.radius) {
+                        explode(al.x, al.y, al.color, 15);
+                        entities.aliens.splice(ai, 1);
+                        score += 100;
+                        scoreEl.innerText = `Score: ${score}`;
+                    }
+                });
+
+                // Collision with Boss
+                if (entities.boss) {
+                    const dist = this.distToSegment({x: entities.boss.x, y: entities.boss.y}, {x: this.x, y: this.y}, {x: laserXEnd, y: laserYEnd});
+                    if (dist < entities.boss.radius) {
+                        entities.boss.hp--;
+                        explode(entities.boss.x, entities.boss.y, '#f00', 3);
+                        if (entities.boss.hp <= 0) {
+                            explode(entities.boss.x, entities.boss.y, '#ff0', 50);
+                            entities.boss = null;
+                            score += 1000;
+                            scoreEl.innerText = `Score: ${score}`;
+                            gameState = 'win';
+                            msgEl.innerText = 'VICTORY!';
+                            setTimeout(init, 3000);
+                        }
+                    }
+                }
+            }
+
+            distToSegment(p, v, w) {
+                const l2 = Math.pow(v.x - w.x, 2) + Math.pow(v.y - w.y, 2);
+                if (l2 === 0) return Math.hypot(p.x - v.x, p.y - v.y);
+                let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+                t = Math.max(0, Math.min(1, t));
+                return Math.hypot(p.x - (v.x + t * (w.x - v.x)), p.y - (v.y + t * (w.y - v.y)));
+            }
+
             draw() {
                 ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
                 ctx.strokeStyle = this.color; ctx.lineWidth = 2;
                 ctx.beginPath(); ctx.moveTo(15, 0); ctx.lineTo(-10, 10); ctx.lineTo(-10, -10); ctx.closePath(); ctx.stroke();
                 ctx.restore();
 
+                if (this.isFiringLaser) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.lineWidth = 4;
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + Math.cos(this.angle) * 1000, this.y + Math.sin(this.angle) * 1000);
+                    ctx.stroke();
+                }
+
                 if (this.shieldTime > 0) {
                     const progress = this.shieldTime / 2400; 
                     let r, g;
                     if (progress >= 0.5) {
-                        // Green to Yellow (progress 1.0 -> 0.5)
-                        // t goes 0 -> 1
                         const t = (1 - progress) * 2;
                         r = Math.floor(255 * t);
                         g = 255;
                     } else {
-                        // Yellow to Red (progress 0.5 -> 0.0)
-                        // t goes 0 -> 1
                         const t = (0.5 - progress) * 2;
                         r = 255;
                         g = Math.floor(255 * (1 - t));
@@ -312,7 +423,7 @@
         }
 
         function init() {
-            entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null };
+            entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null };
             entities.players = [
                 new Ship(canvas.width * 0.3, canvas.height * 0.5, '#00ffcc', { thrust: 'KeyW', rotateLeft: 'KeyA', rotateRight: 'KeyD', shoot: 'Space' }),
                 new Ship(canvas.width * 0.7, canvas.height * 0.5, '#ff00ff', { thrust: 'ArrowUp', rotateLeft: 'ArrowLeft', rotateRight: 'ArrowRight', shoot: 'Enter' })
@@ -325,6 +436,7 @@
             msgEl.innerText = '';
             lastAlienSpawnTime = Date.now();
             lastShieldSpawnTime = Date.now();
+            lastLaserSpawnTime = Date.now();
         }
 
         function update() {
@@ -337,12 +449,21 @@
                 lastAlienSpawnTime = now;
             }
 
-            if (gameState === 'playing' && !entities.shieldPowerup && now - lastShieldSpawnTime > SHIELD_SPAWN_INTERVAL) {
+            if (gameState === 'playing' && !entities.shieldPowerup && !entities.laserPowerup && now - lastShieldSpawnTime > SHIELD_SPAWN_INTERVAL) {
                 if (Math.random() < SHIELD_SPAWN_CHANCE) {
                     entities.shieldPowerup = new ShieldPowerup();
                     lastShieldSpawnTime = now;
                 } else {
                     lastShieldSpawnTime = now;
+                }
+            }
+
+            if (gameState === 'playing' && !entities.laserPowerup && now - lastLaserSpawnTime > LASER_SPAWN_INTERVAL) {
+                if (Math.random() < LASER_SPAWN_CHANCE) {
+                    entities.laserPowerup = new LaserPowerup();
+                    lastLaserSpawnTime = now;
+                } else {
+                    lastLaserSpawnTime = now;
                 }
             }
 
@@ -353,6 +474,7 @@
             entities.aliens.forEach(al => al.update());
             if (entities.boss) entities.boss.update();
             if (entities.shieldPowerup) entities.shieldPowerup.update();
+            if (entities.laserPowerup) entities.laserPowerup.update();
 
             const powerup = entities.shieldPowerup;
             if (powerup) {
@@ -362,6 +484,19 @@
                         explode(p.x, p.y, '#0f0', 20);
                         entities.shieldPowerup = null;
                         score += 50;
+                        scoreEl.innerText = `Score: ${score}`;
+                    }
+                });
+            }
+
+            const laserPowerup = entities.laserPowerup;
+            if (laserPowerup) {
+                entities.players.forEach(p => {
+                    if (Math.hypot(p.x - laserPowerup.x, p.y - laserPowerup.y) < p.radius + laserPowerup.radius) {
+                        p.laserShots = 10;
+                        explode(p.x, p.y, '#f00', 20);
+                        entities.laserPowerup = null;
+                        score += 75;
                         scoreEl.innerText = `Score: ${score}`;
                     }
                 });
@@ -510,6 +645,7 @@
             entities.asteroids.forEach(a => a.draw());
             entities.aliens.forEach(al => al.draw());
             if (entities.shieldPowerup) entities.shieldPowerup.draw();
+            if (entities.laserPowerup) entities.laserPowerup.draw();
             entities.players.forEach(p => p.draw());
             if (entities.boss) entities.boss.draw();
         }
