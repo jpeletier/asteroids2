@@ -299,7 +299,6 @@
                         this.laserTimer = 200; // 200ms
                         this.laserShots--;
                         this.shootCooldown = 15;
-                        this.fireLaser();
                     } else {
                         entities.bullets.push(new Bullet(this.x, this.y, this.angle, this.color, 'player'));
                         this.shootCooldown = 15;
@@ -308,6 +307,7 @@
 
                 if (this.isFiringLaser) {
                     this.laserTimer--;
+                    this.fireLaser();
                     if (this.laserTimer <= 0) {
                         this.isFiringLaser = false;
                     }
