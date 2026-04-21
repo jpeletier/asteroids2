@@ -38,6 +38,7 @@
         let wave = 1;
         let gameState = 'playing'; // playing, boss, win, lose
         let entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null };
+        let stars = [];
         let lastAlienSpawnTime = 0;
         let lastShieldSpawnTime = 0;
         let lastLaserSpawnTime = 0;
@@ -46,6 +47,18 @@
         const SHIELD_SPAWN_INTERVAL = 10000;
         const LASER_SPAWN_CHANCE = 0.3;
         const LASER_SPAWN_INTERVAL = 15000;
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    opacity: Math.random()
+                });
+            }
+        }
 
         class Particle {
             constructor(x, y, color) {
@@ -431,6 +444,7 @@
         }
 
         function init() {
+            initStars();
             entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null };
             entities.players = [
                 new Ship(canvas.width * 0.3, canvas.height * 0.5, '#00ffcc', { thrust: 'KeyW', rotateLeft: 'KeyA', rotateRight: 'KeyD', shoot: 'Space' }),
@@ -648,6 +662,16 @@
 
         function draw() {
             ctx.fillStyle = 'black'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'white';
+            stars.forEach(star => {
+                ctx.globalAlpha = star.opacity;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1.0;
+
             entities.particles.forEach(p => p.draw());
             entities.bullets.forEach(b => b.draw());
             entities.asteroids.forEach(a => a.draw());
@@ -666,6 +690,7 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            initStars();
         });
     </script>
 </body>
