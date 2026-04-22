@@ -1,0 +1,12 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "A simple game",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "live-server --port=9000"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
