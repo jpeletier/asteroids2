@@ -2,7 +2,7 @@ import { initStars, spawnWave, explode } from './utils.js';
 import { Ship } from './entities/Ship.js';
 import { AlienShip } from './entities/AlienShip.js';
 import { Boss } from './entities/Boss.js';
-import { ShieldPowerup, LaserPowerup } from './entities/Powerup.js';
+import { ShieldPowerup, LaserPowerup, AuraPowerup } from './entities/Powerup.js';
 import { Asteroid } from './entities/Asteroid.js';
 import { GAME_CONFIG } from './constants.js';
 
@@ -17,11 +17,12 @@ export class GameEngine {
         this.score = 0;
         this.wave = 1;
         this.gameState = 'playing';
-        this.entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null };
+        this.entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null, auraPowerup: null };
         this.stars = [];
         this.lastAlienSpawnTime = 0;
         this.lastShieldSpawnTime = 0;
         this.lastLaserSpawnTime = 0;
+        this.lastAuraSpawnTime = 0;
         this.keys = {};
 
         window.addEventListener('keydown', e => this.keys[e.code] = true);
@@ -37,7 +38,7 @@ export class GameEngine {
 
     init() {
         this.handleResize();
-        this.entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null };
+        this.entities = { players: [], bullets: [], asteroids: [], particles: [], boss: null, aliens: [], shieldPowerup: null, laserPowerup: null, auraPowerup: null };
         this.entities.players = [
             new Ship(this.canvas.width * 0.3, this.canvas.height * 0.5, '#00ffcc', { thrust: 'KeyW', rotateLeft: 'KeyA', rotateRight: 'KeyD', shoot: 'Space' }),
             new Ship(this.canvas.width * 0.7, this.canvas.height * 0.5, '#ff00ff', { thrust: 'ArrowUp', rotateLeft: 'ArrowLeft', rotateRight: 'ArrowRight', shoot: 'Enter' })
@@ -51,6 +52,7 @@ export class GameEngine {
         this.lastAlienSpawnTime = Date.now();
         this.lastShieldSpawnTime = Date.now();
         this.lastLaserSpawnTime = Date.now();
+        this.lastAuraSpawnTime = Date.now();
     }
 
     updateUI() {
@@ -108,6 +110,15 @@ export class GameEngine {
             }
         }
 
+        if (this.gameState === 'playing' && !this.entities.auraPowerup && now - this.lastAuraSpawnTime > GAME_CONFIG.AURA_SPAWN_INTERVAL) {
+            if (Math.random() < GAME_CONFIG.AURA_SPAWN_CHANCE) {
+                this.entities.auraPowerup = new AuraPowerup();
+                this.lastAuraSpawnTime = now;
+            } else {
+                this.lastAuraSpawnTime = now;
+            }
+        }
+
         this.entities.players.forEach(p => p.update(context));
         this.entities.bullets.forEach(b => b.update(this.canvas));
         this.entities.asteroids.forEach(a => a.update(this.canvas));
@@ -116,6 +127,7 @@ export class GameEngine {
         if (this.entities.boss) this.entities.boss.update(this.canvas);
         if (this.entities.shieldPowerup) this.entities.shieldPowerup.update(this.canvas);
         if (this.entities.laserPowerup) this.entities.laserPowerup.update(this.canvas);
+        if (this.entities.auraPowerup) this.entities.auraPowerup.update(this.canvas);
 
         // Powerup collisions
         const shieldPowerup = this.entities.shieldPowerup;
@@ -135,8 +147,23 @@ export class GameEngine {
             this.entities.players.forEach(p => {
                 if (Math.hypot(p.x - laserPowerup.x, p.y - laserPowerup.y) < p.radius + laserPowerup.radius) {
                     p.laserShots = 10;
+                    p.auraShots = 0;
                     explode(p.x, p.y, '#f00', this.entities, 20);
                     this.entities.laserPowerup = null;
+                    this.updateScore(75);
+                }
+            });
+        }
+
+        const auraPowerup = this.entities.auraPowerup;
+        if (auraPowerup) {
+            this.entities.players.forEach(p => {
+                if (Math.hypot(p.x - auraPowerup.x, p.y - auraPowerup.y) < p.radius + auraPowerup.radius) {
+                    p.auraShots = 10;
+                    p.laserShots = 0;
+                    p.isFiringLaser = false;
+                    explode(p.x, p.y, '#3af', this.entities, 20);
+                    this.entities.auraPowerup = null;
                     this.updateScore(75);
                 }
             });
@@ -309,6 +336,7 @@ export class GameEngine {
         this.entities.aliens.forEach(al => al.draw(this.ctx));
         if (this.entities.shieldPowerup) this.entities.shieldPowerup.draw(this.ctx);
         if (this.entities.laserPowerup) this.entities.laserPowerup.draw(this.ctx);
+        if (this.entities.auraPowerup) this.entities.auraPowerup.draw(this.ctx);
         this.entities.players.forEach(p => p.draw(this.ctx));
         if (this.entities.boss) this.entities.boss.draw(this.ctx);
     }

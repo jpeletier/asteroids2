@@ -4,6 +4,8 @@ export const GAME_CONFIG = {
     SHIELD_SPAWN_INTERVAL: 10000,
     LASER_SPAWN_CHANCE: 0.3,
     LASER_SPAWN_INTERVAL: 15000,
+    AURA_SPAWN_CHANCE: 0.25,
+    AURA_SPAWN_INTERVAL: 18000,
 };
 
 export const ENTITY_CONFIG = {
@@ -39,6 +41,7 @@ export const ENTITY_CONFIG = {
         MAX_HP: 100,
         LASER_SHOT_COUNT: 10,
         LASER_TIMER: 200,
+        AURA_SHOT_COUNT: 10,
         SHIELD_DURATION: 2400,
         HEALTH_BAR_TIMER: 60,
     }
@@ -50,4 +53,5 @@ export const SCORING = {
     BOSS: 1000,
     SHIELD: 50,
     LASER: 75,
+    AURA: 75,
 };

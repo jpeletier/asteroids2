@@ -18,6 +18,7 @@ export class Ship {
         this.laserShots = 0;
         this.isFiringLaser = false;
         this.laserTimer = 0;
+        this.auraShots = 0;
         this.hp = ENTITY_CONFIG.SHIP.MAX_HP;
         this.maxHp = ENTITY_CONFIG.SHIP.MAX_HP;
         this.healthBarTimer = 0;
@@ -55,7 +56,14 @@ export class Ship {
         if (this.shootCooldown > 0) this.shootCooldown--;
 
         if (keys[this.controls.shoot] && this.shootCooldown <= 0) {
-            if (this.laserShots > 0) {
+            if (this.auraShots > 0) {
+                for (let i = 0; i < 8; i++) {
+                    const a = i * Math.PI / 4;
+                    entities.bullets.push(new Bullet(this.x, this.y, a, this.color, 'player'));
+                }
+                this.auraShots--;
+                this.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
+            } else if (this.laserShots > 0) {
                 this.isFiringLaser = true;
                 this.laserTimer = ENTITY_CONFIG.SHIP.LASER_TIMER;
                 this.laserShots--;

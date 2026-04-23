@@ -45,3 +45,9 @@ export class LaserPowerup extends Powerup {
         super(x, y, '#f00', 'L');
     }
 }
+
+export class AuraPowerup extends Powerup {
+    constructor(x, y) {
+        super(x, y, '#3af', 'A');
+    }
+}
