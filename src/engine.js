@@ -118,9 +118,10 @@ export class GameEngine {
         if (this.entities.laserPowerup) this.entities.laserPowerup.update(this.canvas);
 
         // Powerup collisions
-        if (this.entities.shieldPowerup) {
+        const shieldPowerup = this.entities.shieldPowerup;
+        if (shieldPowerup) {
             this.entities.players.forEach(p => {
-                if (Math.hypot(p.x - this.entities.shieldPowerup.x, p.y - this.entities.shieldPowerup.y) < p.radius + this.entities.shieldPowerup.radius) {
+                if (Math.hypot(p.x - shieldPowerup.x, p.y - shieldPowerup.y) < p.radius + shieldPowerup.radius) {
                     p.shieldTime = 2400;
                     explode(p.x, p.y, '#0f0', this.entities, 20);
                     this.entities.shieldPowerup = null;
@@ -129,9 +130,10 @@ export class GameEngine {
             });
         }
 
-        if (this.entities.laserPowerup) {
+        const laserPowerup = this.entities.laserPowerup;
+        if (laserPowerup) {
             this.entities.players.forEach(p => {
-                if (Math.hypot(p.x - this.entities.laserPowerup.x, p.y - this.entities.laserPowerup.y) < p.radius + this.entities.laserPowerup.radius) {
+                if (Math.hypot(p.x - laserPowerup.x, p.y - laserPowerup.y) < p.radius + laserPowerup.radius) {
                     p.laserShots = 10;
                     explode(p.x, p.y, '#f00', this.entities, 20);
                     this.entities.laserPowerup = null;
