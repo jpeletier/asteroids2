@@ -19,5 +19,11 @@ A fast-paced, two-player cooperative Asteroids-style game.
 - **Movement**: `Up Arrow` (Thrust), `Left Arrow` (Rotate Left), `Right Arrow` (Rotate Right)
 - **Shoot**: `Enter`
 
-## How to Run
-Open `index.html` in any modern web browser.
+## Development
+
+```bash
+npm install        # install dependencies
+npm run dev        # start Vite dev server (http://localhost:5173)
+npm run build      # typecheck + production bundle → dist/
+npm run test       # run Vitest smoke tests
+```
