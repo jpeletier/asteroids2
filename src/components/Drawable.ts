@@ -8,6 +8,7 @@ export interface Statement {
 }
 
 export class Drawable extends Component {
+  zIndex = 0;
   _statements: Statement[] = [];
   _draw: ((ctx: CanvasRenderingContext2D, vars: Record<string, unknown>) => void) | undefined = undefined;
 

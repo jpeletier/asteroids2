@@ -1,6 +1,6 @@
 import { world } from '../world';
 import {
-  Position, Velocity, Asteroid, Collider, Drawable, Shape, StrokeStyle, DrawOrder, Wraps,
+  Position, Velocity, Asteroid, Collider, Drawable, Shape, StrokeStyle, Wraps,
 } from '../components/index';
 import { CAT_ASTEROID, CAT_PLAYER, CAT_PLAYER_BULLET, CAT_ENEMY_BULLET, CAT_ENEMY, ENTITY_CONFIG } from '../constants';
 import type { Point } from '../types';
@@ -21,9 +21,8 @@ export function createAsteroid(x: number, y: number, level: 1 | 2 | 3): void {
   const col = e.add(Collider);
   col.radius = radius; col.category = CAT_ASTEROID;
   col.mask = CAT_PLAYER | CAT_PLAYER_BULLET | CAT_ENEMY_BULLET | CAT_ENEMY;
-  e.add(DrawOrder).z = 30;
+  e.add(Drawable).zIndex = 30;
   e.add(Wraps);
-  e.add(Drawable);
   const stroke = e.add(StrokeStyle); stroke.style = color; stroke.lineWidth = 2;
   const shape = e.add(Shape);
   const vert = 5 + Math.floor(Math.random() * 5);

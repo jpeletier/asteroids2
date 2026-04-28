@@ -1,41 +1,36 @@
 import { world, renderPhase, renderCtx, canvasSize } from '../world';
-import { Position, Drawable, Rotation, DrawOrder } from '../components/index';
+import { Position, Drawable, Rotation } from '../components/index';
 
-let _ctx: CanvasRenderingContext2D | null = null;
+let ctx: CanvasRenderingContext2D | null = null;
 
-const renderSystem = world.system('Render')
+world.system('Render')
   .requires(Position, Drawable)
   .phase(renderPhase)
-  .track();
+  .sort([Drawable], ([a], [b]) => {
+    return a.zIndex !== b.zIndex ? a.zIndex - b.zIndex : a.entity.eid - b.entity.eid;
+  })
+  .run(() => {
+    ctx = renderCtx.ctx ?? null;
+    if (!ctx) return;
 
-renderSystem.run(() => {
-  _ctx = renderCtx.ctx ?? null;
-  if (!_ctx) return;
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
 
-  _ctx.fillStyle = 'black';
-  _ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
-
-  _ctx.fillStyle = 'white';
-  for (const star of renderCtx.stars) {
-    _ctx.globalAlpha = star.opacity;
-    _ctx.beginPath();
-    _ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-    _ctx.fill();
-  }
-  _ctx.globalAlpha = 1.0;
-
-  const sorted = [...renderSystem.entities].sort(
-    (a, b) => (a.get(DrawOrder)?.z ?? 0) - (b.get(DrawOrder)?.z ?? 0)
-  );
-
-  for (const e of sorted) {
-    const pos = e.get(Position)!;
-    const drawable = e.get(Drawable)!;
+    ctx.fillStyle = 'white';
+    for (const star of renderCtx.stars) {
+      ctx.globalAlpha = star.opacity;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1.0;
+  })
+  .each([Position, Drawable], (e, [pos, drawable]) => {
+    if (!ctx) return;
     const rot = e.get(Rotation);
-    _ctx.save();
-    _ctx.translate(pos.x, pos.y);
-    if (rot) _ctx.rotate(rot.angle);
-    drawable.draw(_ctx);
-    _ctx.restore();
-  }
-});
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    if (rot) ctx.rotate(rot.angle);
+    drawable.draw(ctx);
+    ctx.restore();
+  });

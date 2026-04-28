@@ -1,6 +1,6 @@
 import { world } from '../world';
 import {
-  Position, Velocity, Rotation, Bullet, Collider, Decay, Drawable, Arc, FillStyle, DrawOrder, Wraps,
+  Position, Velocity, Rotation, Bullet, Collider, Decay, Drawable, Arc, FillStyle, Wraps,
 } from '../components/index';
 import { ENTITY_CONFIG } from '../constants';
 import type { OwnerType } from '../types';
@@ -22,9 +22,8 @@ export function createBullet(
   e.add(Bullet).ownerType = ownerType;
   const col = e.add(Collider); col.radius = 2; col.category = categoryBits; col.mask = maskBits;
   const dec = e.add(Decay); dec.life = ENTITY_CONFIG.BULLET.LIFE; dec.decay = 1;
-  e.add(DrawOrder).z = 20;
+  e.add(Drawable).zIndex = 20;
   e.add(Wraps);
-  e.add(Drawable);
   e.add(FillStyle).style = color;
   e.add(Arc).radius = 2;
 }

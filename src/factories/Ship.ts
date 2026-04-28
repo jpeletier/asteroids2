@@ -1,7 +1,7 @@
 import { world } from '../world';
 import {
   Position, Velocity, Rotation, Friction, Thrust,
-  Drawable, Shape, StrokeStyle, DrawOrder, Wraps,
+  Drawable, Shape, StrokeStyle, Wraps,
   Collider, Health, DefaultWeapon, Player, ShipInput,
 } from '../components/index';
 import {
@@ -40,9 +40,8 @@ export function createShip(
   col.radius = ENTITY_CONFIG.SHIP.RADIUS;
   col.category = CAT_PLAYER;
   col.mask = CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP;
-  e.add(DrawOrder).z = 60;
+  e.add(Drawable).zIndex = 60;
   e.add(Wraps);
-  e.add(Drawable);
   const stroke = e.add(StrokeStyle); stroke.style = color; stroke.lineWidth = 2;
   // Triangle: nose forward (+x), tail corners back-left/right
   e.add(Shape).points = [{ x: 15, y: 0 }, { x: -10, y: 10 }, { x: -10, y: -10 }];

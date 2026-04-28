@@ -1,7 +1,7 @@
 import type { Entity } from '@vworlds/vecs';
 import { world, canvasSize, gameState } from '../world';
 import {
-  Position, Velocity, Pickup, Collider, Drawable, Arc, StrokeStyle, Label, DrawOrder, Wraps,
+  Position, Velocity, Pickup, Collider, Drawable, Arc, StrokeStyle, Label, Wraps,
   LaserWeapon, AuraWeapon, Shield,
 } from '../components/index';
 import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, SCORING } from '../constants';
@@ -50,9 +50,8 @@ export function createPickup(type: PickupType): void {
   col.radius = ENTITY_CONFIG.POWERUP.RADIUS;
   col.category = CAT_PICKUP;
   col.mask = CAT_PLAYER;
-  e.add(DrawOrder).z = 50;
+  e.add(Drawable).zIndex = 50;
   e.add(Wraps);
-  e.add(Drawable);
   const stroke = e.add(StrokeStyle); stroke.style = cfg.color; stroke.lineWidth = 2;
   e.add(Arc).radius = ENTITY_CONFIG.POWERUP.RADIUS;
   const lbl = e.add(Label); lbl.text = cfg.label; lbl.color = cfg.color;

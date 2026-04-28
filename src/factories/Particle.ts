@@ -1,6 +1,6 @@
 import { world } from '../world';
 import {
-  Position, Velocity, Particle, Decay, Drawable, Alpha, FilledRect, FillStyle, DrawOrder,
+  Position, Velocity, Particle, Decay, Drawable, Alpha, FilledRect, FillStyle,
 } from '../components/index';
 
 export function createParticle(x: number, y: number, color: string): void {
@@ -11,8 +11,7 @@ export function createParticle(x: number, y: number, color: string): void {
   vel.vy = (Math.random() - 0.5) * 5;
   e.add(Particle);
   const dec = e.add(Decay); dec.life = 1.0; dec.decay = 0.02 + Math.random() * 0.02;
-  e.add(DrawOrder).z = 10;
-  e.add(Drawable);
+  e.add(Drawable).zIndex = 10;
   e.add(Alpha).value = 1.0;
   e.add(FillStyle).style = color;
   const rect = e.add(FilledRect); rect.width = 2; rect.height = 2;

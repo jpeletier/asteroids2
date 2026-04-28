@@ -1,6 +1,6 @@
 import { world, canvasSize } from '../world';
 import {
-  Position, Velocity, Rotation, Alien, Collider, Drawable, Shape, StrokeStyle, DrawOrder, Wraps,
+  Position, Velocity, Rotation, Alien, Collider, Drawable, Shape, StrokeStyle, Wraps,
 } from '../components/index';
 import { CAT_ENEMY, CAT_PLAYER, CAT_ASTEROID, CAT_PLAYER_BULLET, ENTITY_CONFIG } from '../constants';
 
@@ -18,9 +18,8 @@ export function createAlien(): void {
   col.radius = ENTITY_CONFIG.ALIEN.RADIUS;
   col.category = CAT_ENEMY;
   col.mask = CAT_PLAYER | CAT_ASTEROID | CAT_PLAYER_BULLET;
-  e.add(DrawOrder).z = 40;
+  e.add(Drawable).zIndex = 40;
   e.add(Wraps);
-  e.add(Drawable);
   const stroke = e.add(StrokeStyle); stroke.style = '#ffaa00'; stroke.lineWidth = 2;
   // UFO-like diamond shape
   e.add(Shape).points = [{ x: 15, y: 0 }, { x: -10, y: 10 }, { x: -5, y: 0 }, { x: -10, y: -10 }];

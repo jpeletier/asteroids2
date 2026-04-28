@@ -1,7 +1,7 @@
 import { World } from '@vworlds/vecs';
 import {
   Position, Velocity, Rotation, Friction, Thrust,
-  Drawable, Shape, Arc, FillStyle, StrokeStyle, Label, Alpha, FilledRect, DrawOrder,
+  Drawable, Shape, Arc, FillStyle, StrokeStyle, Label, Alpha, FilledRect,
   Collider, Health, Shield,
   LaserWeapon, AuraWeapon, DefaultWeapon,
   Pickup, Player, ShipInput, Bullet, Asteroid, Alien, Particle, Decay, Wraps, Dead,
@@ -25,7 +25,6 @@ world.registerComponent(StrokeStyle);
 world.registerComponent(Label);
 world.registerComponent(Alpha);
 world.registerComponent(FilledRect);
-world.registerComponent(DrawOrder);
 world.registerComponent(Collider);
 world.registerComponent(Health);
 world.registerComponent(Shield);

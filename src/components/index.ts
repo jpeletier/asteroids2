@@ -11,7 +11,6 @@ export { StrokeStyle } from './StrokeStyle';
 export { Label } from './Label';
 export { Alpha } from './Alpha';
 export { FilledRect } from './FilledRect';
-export { DrawOrder } from './DrawOrder';
 export { Collider } from './Collider';
 export { Health } from './Health';
 export { Shield } from './Shield';
