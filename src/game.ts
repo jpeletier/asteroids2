@@ -30,10 +30,16 @@ export function initGame(): void {
   if (msgEl) msgEl.innerText = '';
 
   createShip(canvasSize.width * 0.3, canvasSize.height * 0.5, '#00ffcc', 0, {
-    thrust: 'KeyW', rotateLeft: 'KeyA', rotateRight: 'KeyD', shoot: 'Space',
+    thrust: 'KeyW',
+    rotateLeft: 'KeyA',
+    rotateRight: 'KeyD',
+    shoot: 'Space',
   });
   createShip(canvasSize.width * 0.7, canvasSize.height * 0.5, '#ff00ff', 1, {
-    thrust: 'ArrowUp', rotateLeft: 'ArrowLeft', rotateRight: 'ArrowRight', shoot: 'Enter',
+    thrust: 'ArrowUp',
+    rotateLeft: 'ArrowLeft',
+    rotateRight: 'ArrowRight',
+    shoot: 'Enter',
   });
 
   spawnWave(1);

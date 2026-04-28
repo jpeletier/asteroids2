@@ -1,9 +1,23 @@
 import { world, updatePhase, keys } from '../world';
-import { Position, Rotation, ShipInput, LaserWeapon, AuraWeapon, DefaultWeapon, StrokeStyle } from '../components/index';
+import {
+  Position,
+  Rotation,
+  ShipInput,
+  LaserWeapon,
+  AuraWeapon,
+  DefaultWeapon,
+  StrokeStyle,
+} from '../components/index';
 import { createBullet } from '../factories/Bullet';
-import { CAT_PLAYER_BULLET, CAT_ASTEROID, CAT_ENEMY, ENTITY_CONFIG } from '../constants';
+import {
+  CAT_PLAYER_BULLET,
+  CAT_ASTEROID,
+  CAT_ENEMY,
+  ENTITY_CONFIG,
+} from '../constants';
 
-world.system('Shooting')
+world
+  .system('Shooting')
   .requires(Position, ShipInput, Rotation)
   .phase(updatePhase)
   .each([Position, ShipInput, Rotation], (e, [pos, input, rot]) => {
@@ -15,7 +29,15 @@ world.system('Shooting')
 
     if (aura && aura.shots > 0) {
       for (let i = 0; i < 8; i++) {
-        createBullet(pos.x, pos.y, (i * Math.PI) / 4, color, 'player', CAT_PLAYER_BULLET, CAT_ASTEROID | CAT_ENEMY);
+        createBullet(
+          pos.x,
+          pos.y,
+          (i * Math.PI) / 4,
+          color,
+          'player',
+          CAT_PLAYER_BULLET,
+          CAT_ASTEROID | CAT_ENEMY,
+        );
       }
       aura.shots--;
       if (aura.shots <= 0) {
@@ -29,7 +51,15 @@ world.system('Shooting')
       laser.shots--;
       input.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
     } else if (e.get(DefaultWeapon)) {
-      createBullet(pos.x, pos.y, rot.angle, color, 'player', CAT_PLAYER_BULLET, CAT_ASTEROID | CAT_ENEMY);
+      createBullet(
+        pos.x,
+        pos.y,
+        rot.angle,
+        color,
+        'player',
+        CAT_PLAYER_BULLET,
+        CAT_ASTEROID | CAT_ENEMY,
+      );
       input.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
     }
   });

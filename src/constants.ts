@@ -59,9 +59,9 @@ export const SHIELD_DAMAGE = {
 } as const;
 
 // Collision category bits
-export const CAT_PLAYER        = 1 << 0;
-export const CAT_ASTEROID      = 1 << 1;
+export const CAT_PLAYER = 1 << 0;
+export const CAT_ASTEROID = 1 << 1;
 export const CAT_PLAYER_BULLET = 1 << 2;
-export const CAT_ENEMY_BULLET  = 1 << 3;
-export const CAT_ENEMY         = 1 << 4;
-export const CAT_PICKUP        = 1 << 5;
+export const CAT_ENEMY_BULLET = 1 << 3;
+export const CAT_ENEMY = 1 << 4;
+export const CAT_PICKUP = 1 << 5;

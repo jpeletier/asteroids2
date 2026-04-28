@@ -6,7 +6,8 @@ import { createPickup } from '../factories/Pickup';
 
 const alienQuery = world.query('SpawnAliens').requires(Alien);
 
-world.system('Spawn')
+world
+  .system('Spawn')
   .phase(updatePhase)
   .run(() => {
     if (gameState.state !== 'playing') return;
@@ -20,7 +21,10 @@ world.system('Spawn')
       gameState.lastAlienSpawnTime = now;
     }
 
-    if (!gameState.shieldPickupExists && now - gameState.lastShieldSpawnTime > GAME_CONFIG.SHIELD_SPAWN_INTERVAL) {
+    if (
+      !gameState.shieldPickupExists &&
+      now - gameState.lastShieldSpawnTime > GAME_CONFIG.SHIELD_SPAWN_INTERVAL
+    ) {
       if (Math.random() < GAME_CONFIG.SHIELD_SPAWN_CHANCE) {
         createPickup('shield');
         gameState.shieldPickupExists = true;
@@ -28,7 +32,10 @@ world.system('Spawn')
       gameState.lastShieldSpawnTime = now;
     }
 
-    if (!gameState.laserPickupExists && now - gameState.lastLaserSpawnTime > GAME_CONFIG.LASER_SPAWN_INTERVAL) {
+    if (
+      !gameState.laserPickupExists &&
+      now - gameState.lastLaserSpawnTime > GAME_CONFIG.LASER_SPAWN_INTERVAL
+    ) {
       if (Math.random() < GAME_CONFIG.LASER_SPAWN_CHANCE) {
         createPickup('laser');
         gameState.laserPickupExists = true;
@@ -36,7 +43,10 @@ world.system('Spawn')
       gameState.lastLaserSpawnTime = now;
     }
 
-    if (!gameState.auraPickupExists && now - gameState.lastAuraSpawnTime > GAME_CONFIG.AURA_SPAWN_INTERVAL) {
+    if (
+      !gameState.auraPickupExists &&
+      now - gameState.lastAuraSpawnTime > GAME_CONFIG.AURA_SPAWN_INTERVAL
+    ) {
       if (Math.random() < GAME_CONFIG.AURA_SPAWN_CHANCE) {
         createPickup('aura');
         gameState.auraPickupExists = true;

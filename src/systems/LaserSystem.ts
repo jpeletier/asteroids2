@@ -1,5 +1,14 @@
 import { world, updatePhase, gameState } from '../world';
-import { Position, LaserWeapon, Rotation, Collider, Asteroid, Alien, Dead, DefaultWeapon } from '../components/index';
+import {
+  Position,
+  LaserWeapon,
+  Rotation,
+  Collider,
+  Asteroid,
+  Alien,
+  Dead,
+  DefaultWeapon,
+} from '../components/index';
 import { distToSegment } from '../utils';
 import { createAsteroid } from '../factories/Asteroid';
 import { explode } from '../factories/Particle';
@@ -7,10 +16,15 @@ import { SCORING } from '../constants';
 
 const LASER_LEN = 1000;
 
-const asteroidQuery = world.query('LaserAsteroids').requires(Position, Asteroid, Collider);
-const alienOnlyQuery = world.query('LaserAlienOnly').requires(Position, Alien, Collider);
+const asteroidQuery = world
+  .query('LaserAsteroids')
+  .requires(Position, Asteroid, Collider);
+const alienOnlyQuery = world
+  .query('LaserAlienOnly')
+  .requires(Position, Alien, Collider);
 
-world.system('LaserSystem')
+world
+  .system('LaserSystem')
   .requires(Position, LaserWeapon, Rotation)
   .phase(updatePhase)
   .each([Position, LaserWeapon, Rotation], (e, [pos, laser, rot]) => {
@@ -27,7 +41,10 @@ world.system('LaserSystem')
     }
 
     const v = { x: pos.x, y: pos.y };
-    const w = { x: pos.x + Math.cos(rot.angle) * LASER_LEN, y: pos.y + Math.sin(rot.angle) * LASER_LEN };
+    const w = {
+      x: pos.x + Math.cos(rot.angle) * LASER_LEN,
+      y: pos.y + Math.sin(rot.angle) * LASER_LEN,
+    };
 
     for (const ae of asteroidQuery.entities) {
       const apos = ae.get(Position)!;

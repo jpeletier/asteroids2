@@ -3,11 +3,14 @@ import { Position, Drawable, Rotation } from '../components/index';
 
 let ctx: CanvasRenderingContext2D | null = null;
 
-world.system('Render')
+world
+  .system('Render')
   .requires(Position, Drawable)
   .phase(renderPhase)
   .sort([Drawable], ([a], [b]) => {
-    return a.zIndex !== b.zIndex ? a.zIndex - b.zIndex : a.entity.eid - b.entity.eid;
+    return a.zIndex !== b.zIndex
+      ? a.zIndex - b.zIndex
+      : a.entity.eid - b.entity.eid;
   })
   .run(() => {
     ctx = renderCtx.ctx ?? null;

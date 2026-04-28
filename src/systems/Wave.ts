@@ -5,7 +5,8 @@ import { createAsteroid } from '../factories/Asteroid';
 const asteroidQuery = world.query('WaveAsteroids').requires(Asteroid);
 const alienQuery = world.query('WaveAliens').requires(Alien);
 
-world.system('Wave')
+world
+  .system('Wave')
   .phase(updatePhase)
   .run(() => {
     if (gameState.state !== 'playing') return;

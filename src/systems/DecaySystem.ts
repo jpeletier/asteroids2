@@ -1,7 +1,8 @@
 import { world, updatePhase } from '../world';
 import { Decay, Dead, Alpha } from '../components/index';
 
-world.system('DecaySystem')
+world
+  .system('DecaySystem')
   .requires(Decay)
   .phase(updatePhase)
   .each([Decay], (e, [dec]) => {

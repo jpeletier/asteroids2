@@ -3,13 +3,17 @@ import { Drawable, StrokeStyle } from '../../components/index';
 
 const STROKE_EXEC_KEY = {};
 
-world.system('StrokeStyleSystem')
+world
+  .system('StrokeStyleSystem')
   .requires(Drawable, StrokeStyle)
   .phase(renderPhase)
   .enter([Drawable, StrokeStyle], (_e, [drawable, ss]) => {
-    drawable.addStatement(StrokeStyle, 100,
+    drawable.addStatement(
+      StrokeStyle,
+      100,
       'ctx.strokeStyle = vars.ss.style; ctx.lineWidth = vars.ss.lineWidth',
-      { ss });
+      { ss },
+    );
     drawable.addStatement(STROKE_EXEC_KEY, 45, 'ctx.stroke()', {});
   })
   .exit([Drawable], (_e, [drawable]) => {

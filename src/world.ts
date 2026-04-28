@@ -1,11 +1,38 @@
 import { World } from '@vworlds/vecs';
 import {
-  Position, Velocity, Rotation, Friction, Thrust,
-  Drawable, Shape, Arc, FillStyle, StrokeStyle, Label, Alpha, FilledRect,
-  Collider, Health, Shield,
-  LaserWeapon, AuraWeapon, DefaultWeapon,
-  Pickup, Player, ShipInput, Bullet, Asteroid, Alien, Particle, Decay, Wraps, Dead,
-  CanvasSize, GameStateComp, RenderContext, Keys,
+  Position,
+  Velocity,
+  Rotation,
+  Friction,
+  Thrust,
+  Drawable,
+  Shape,
+  Arc,
+  FillStyle,
+  StrokeStyle,
+  Label,
+  Alpha,
+  FilledRect,
+  Collider,
+  Health,
+  Shield,
+  LaserWeapon,
+  AuraWeapon,
+  DefaultWeapon,
+  Pickup,
+  Player,
+  ShipInput,
+  Bullet,
+  Asteroid,
+  Alien,
+  Particle,
+  Decay,
+  Wraps,
+  Dead,
+  CanvasSize,
+  GameStateComp,
+  RenderContext,
+  Keys,
 } from './components/index';
 import { initStars } from './utils';
 
@@ -85,8 +112,12 @@ export function initDOM(
   renderCtx.ctx = ctx;
   renderCtx.stars = initStars(canvasSize.width, canvasSize.height);
 
-  window.addEventListener('keydown', (e) => { keys.state[e.code] = true; });
-  window.addEventListener('keyup', (e) => { keys.state[e.code] = false; });
+  window.addEventListener('keydown', (e) => {
+    keys.state[e.code] = true;
+  });
+  window.addEventListener('keyup', (e) => {
+    keys.state[e.code] = false;
+  });
   window.addEventListener('resize', () => {
     canvasSize.width = canvasEl.width = window.innerWidth;
     canvasSize.height = canvasEl.height = window.innerHeight;

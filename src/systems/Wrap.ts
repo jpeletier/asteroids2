@@ -1,7 +1,8 @@
 import { world, updatePhase, canvasSize } from '../world';
 import { Position, Wraps } from '../components/index';
 
-world.system('Wrap')
+world
+  .system('Wrap')
   .requires(Position, Wraps)
   .phase(updatePhase)
   .each([Position], (_e, [pos]) => {

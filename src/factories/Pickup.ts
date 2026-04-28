@@ -1,8 +1,18 @@
 import type { Entity } from '@vworlds/vecs';
 import { world, canvasSize, gameState } from '../world';
 import {
-  Position, Velocity, Pickup, Collider, Drawable, Arc, StrokeStyle, Label, Wraps,
-  LaserWeapon, AuraWeapon, Shield,
+  Position,
+  Velocity,
+  Pickup,
+  Collider,
+  Drawable,
+  Arc,
+  StrokeStyle,
+  Label,
+  Wraps,
+  LaserWeapon,
+  AuraWeapon,
+  Shield,
 } from '../components/index';
 import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, SCORING } from '../constants';
 
@@ -10,8 +20,8 @@ type PickupType = 'shield' | 'laser' | 'aura';
 
 const PICKUP_CONFIG: Record<PickupType, { color: string; label: string }> = {
   shield: { color: '#0f0', label: 'S' },
-  laser:  { color: '#f00', label: 'L' },
-  aura:   { color: '#3af', label: 'A' },
+  laser: { color: '#f00', label: 'L' },
+  aura: { color: '#3af', label: 'A' },
 };
 
 function makeEffectFunc(type: PickupType): (picker: Entity) => void {
@@ -52,7 +62,11 @@ export function createPickup(type: PickupType): void {
   col.mask = CAT_PLAYER;
   e.add(Drawable).zIndex = 50;
   e.add(Wraps);
-  const stroke = e.add(StrokeStyle); stroke.style = cfg.color; stroke.lineWidth = 2;
+  const stroke = e.add(StrokeStyle);
+  stroke.style = cfg.color;
+  stroke.lineWidth = 2;
   e.add(Arc).radius = ENTITY_CONFIG.POWERUP.RADIUS;
-  const lbl = e.add(Label); lbl.text = cfg.label; lbl.color = cfg.color;
+  const lbl = e.add(Label);
+  lbl.text = cfg.label;
+  lbl.color = cfg.color;
 }

@@ -1,2 +1,4 @@
 import { Component } from '@vworlds/vecs';
-export class Rotation extends Component { angle = 0; }
+export class Rotation extends Component {
+  angle = 0;
+}

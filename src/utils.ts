@@ -5,7 +5,10 @@ export function distToSegment(p: Point, v: Point, w: Point): number {
   if (l2 === 0) return Math.hypot(p.x - v.x, p.y - v.y);
   let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
   t = Math.max(0, Math.min(1, t));
-  return Math.hypot(p.x - (v.x + t * (w.x - v.x)), p.y - (v.y + t * (w.y - v.y)));
+  return Math.hypot(
+    p.x - (v.x + t * (w.x - v.x)),
+    p.y - (v.y + t * (w.y - v.y)),
+  );
 }
 
 export function initStars(width: number, height: number): Star[] {

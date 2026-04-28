@@ -1,2 +1,4 @@
 import { Component } from '@vworlds/vecs';
-export class Alpha extends Component { value = 1; }
+export class Alpha extends Component {
+  value = 1;
+}

@@ -1,10 +1,14 @@
 import { world, updatePhase, gameState, msgEl } from '../world';
 import {
-  Collider, Dead, Shield, Health, Asteroid, Pickup, Position,
+  Collider,
+  Dead,
+  Shield,
+  Health,
+  Asteroid,
+  Pickup,
+  Position,
 } from '../components/index';
-import {
-  SHIELD_DAMAGE, SCORING,
-} from '../constants';
+import { SHIELD_DAMAGE, SCORING } from '../constants';
 import { explode } from '../factories/Particle';
 import { createAsteroid } from '../factories/Asteroid';
 import type { Entity } from '@vworlds/vecs';
@@ -16,7 +20,11 @@ function regKey(bitA: number, bitB: number): number {
   return Math.min(bitA, bitB) * 100 + Math.max(bitA, bitB);
 }
 
-export function registerCollisionEffect(bitA: number, bitB: number, handler: CollisionHandler): void {
+export function registerCollisionEffect(
+  bitA: number,
+  bitB: number,
+  handler: CollisionHandler,
+): void {
   const lo = Math.min(bitA, bitB);
   const hi = Math.max(bitA, bitB);
   const k = regKey(lo, hi);
@@ -36,7 +44,12 @@ function getBits(mask: number): number[] {
   return bits;
 }
 
-function dispatchCollision(a: Entity, b: Entity, colA: Collider, colB: Collider): void {
+function dispatchCollision(
+  a: Entity,
+  b: Entity,
+  colA: Collider,
+  colB: Collider,
+): void {
   const catAbits = colA.category & colB.mask;
   const catBbits = colB.category & colA.mask;
   const catAlist = getBits(catAbits);
@@ -49,7 +62,8 @@ function dispatchCollision(a: Entity, b: Entity, colA: Collider, colB: Collider)
       if (handlers) {
         for (const h of handlers) {
           // h was stored with (lo-cat, hi-cat) order; a has cA, b has cB
-          if (cA <= cB) h(a, b); else h(b, a);
+          if (cA <= cB) h(a, b);
+          else h(b, a);
         }
       }
     }
@@ -57,21 +71,25 @@ function dispatchCollision(a: Entity, b: Entity, colA: Collider, colB: Collider)
 }
 
 // ── Bit indices (matching CAT_* = 1<<N) ──────────────────────────────────
-export const BIT_PLAYER        = 0;
-export const BIT_ASTEROID      = 1;
+export const BIT_PLAYER = 0;
+export const BIT_ASTEROID = 1;
 export const BIT_PLAYER_BULLET = 2;
-export const BIT_ENEMY_BULLET  = 3;
-export const BIT_ENEMY         = 4;
-export const BIT_PICKUP        = 5;
+export const BIT_ENEMY_BULLET = 3;
+export const BIT_ENEMY = 4;
+export const BIT_PICKUP = 5;
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 let _initGame: (() => void) | null = null;
-export function setInitGameCallback(fn: () => void): void { _initGame = fn; }
+export function setInitGameCallback(fn: () => void): void {
+  _initGame = fn;
+}
 
 function triggerLose(): void {
   gameState.state = 'lose';
   if (msgEl) msgEl.innerText = 'GAME OVER';
-  setTimeout(() => { _initGame?.(); }, 3000);
+  setTimeout(() => {
+    _initGame?.();
+  }, 3000);
 }
 
 function damagePlayer(player: Entity, shieldDmg: number): void {
@@ -150,7 +168,12 @@ registerCollisionEffect(BIT_ASTEROID, BIT_ENEMY_BULLET, (asteroid, bullet) => {
 registerCollisionEffect(BIT_ASTEROID, BIT_ENEMY, (asteroid, alien) => {
   if (asteroid.get(Dead) || alien.get(Dead)) return;
   const acomp = asteroid.get(Asteroid);
-  explode(getPos(asteroid).x, getPos(asteroid).y, acomp?.color ?? '#ffaa00', 20);
+  explode(
+    getPos(asteroid).x,
+    getPos(asteroid).y,
+    acomp?.color ?? '#ffaa00',
+    20,
+  );
   alien.add(Dead);
   asteroid.add(Dead);
   gameState.score += SCORING.ALIEN;
@@ -173,7 +196,12 @@ registerCollisionEffect(BIT_PLAYER, BIT_ASTEROID, (player, asteroid) => {
   const { x: ax, y: ay } = getPos(asteroid);
   const { x: px, y: py } = getPos(player);
   damagePlayer(player, SHIELD_DAMAGE.ASTEROID);
-  explode(player.get(Shield) ? ax : px, player.get(Shield) ? ay : py, acomp.color, 5);
+  explode(
+    player.get(Shield) ? ax : px,
+    player.get(Shield) ? ay : py,
+    acomp.color,
+    5,
+  );
   asteroid.add(Dead);
   gameState.score += SCORING.ASTEROID_BASE * acomp.level;
 });
@@ -181,7 +209,8 @@ registerCollisionEffect(BIT_PLAYER, BIT_ASTEROID, (player, asteroid) => {
 // ── Collision query + system ───────────────────────────────────────────────
 const colliderQuery = world.query('Colliders').requires(Collider).track();
 
-world.system('Collision')
+world
+  .system('Collision')
   .phase(updatePhase)
   .run(() => {
     if (gameState.state !== 'playing') return;
@@ -195,9 +224,13 @@ world.system('Collision')
         const b = entities[j]!;
         if (b.get(Dead)) continue;
         const colB = b.get(Collider)!;
-        if (!(colA.mask & colB.category) || !(colB.mask & colA.category)) continue;
+        if (!(colA.mask & colB.category) || !(colB.mask & colA.category))
+          continue;
         const posB = b.get(Position)!;
-        if (Math.hypot(posA.x - posB.x, posA.y - posB.y) < colA.radius + colB.radius) {
+        if (
+          Math.hypot(posA.x - posB.x, posA.y - posB.y) <
+          colA.radius + colB.radius
+        ) {
           dispatchCollision(a, b, colA, colB);
         }
       }

@@ -1,7 +1,8 @@
 import { world, updatePhase } from '../world';
 import { Health } from '../components/index';
 
-world.system('HealthSystem')
+world
+  .system('HealthSystem')
   .requires(Health)
   .phase(updatePhase)
   .each([Health], (_e, [health]) => {
