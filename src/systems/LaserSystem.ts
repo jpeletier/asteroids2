@@ -4,12 +4,11 @@ import { distToSegment } from '../utils';
 import { createAsteroid } from '../factories/Asteroid';
 import { explode } from '../factories/Particle';
 import { SCORING } from '../constants';
-import type { Entity } from '@vworlds/vecs';
 
 const LASER_LEN = 1000;
 
-const asteroidQuery = world.query('LaserAsteroids').requires(Position, Asteroid, Collider).track();
-const alienOnlyQuery = world.query('LaserAlienOnly').requires(Position, Alien, Collider).track();
+const asteroidQuery = world.query('LaserAsteroids').requires(Position, Asteroid, Collider);
+const alienOnlyQuery = world.query('LaserAlienOnly').requires(Position, Alien, Collider);
 
 world.system('LaserSystem')
   .requires(Position, LaserWeapon, Rotation)
@@ -30,7 +29,7 @@ world.system('LaserSystem')
     const v = { x: pos.x, y: pos.y };
     const w = { x: pos.x + Math.cos(rot.angle) * LASER_LEN, y: pos.y + Math.sin(rot.angle) * LASER_LEN };
 
-    for (const ae of asteroidQuery.entities as Set<Entity>) {
+    for (const ae of asteroidQuery.entities) {
       const apos = ae.get(Position)!;
       const acol = ae.get(Collider)!;
       const acomp = ae.get(Asteroid)!;
@@ -47,7 +46,7 @@ world.system('LaserSystem')
       }
     }
 
-    for (const ale of alienOnlyQuery.entities as Set<Entity>) {
+    for (const ale of alienOnlyQuery.entities) {
       const alpos = ale.get(Position)!;
       const alcol = ale.get(Collider)!;
       if (ale.get(Dead)) continue;

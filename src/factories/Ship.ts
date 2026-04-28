@@ -23,7 +23,7 @@ export function createShip(
   e.add(Velocity);
   const rot = e.add(Rotation); rot.angle = 0;
   const thrust = e.add(Thrust); thrust.force = ENTITY_CONFIG.SHIP.THRUST_POWER;
-  const fric = e.add(Friction); fric.value = ENTITY_CONFIG.SHIP.FRICTION;
+  e.add(Friction).value = ENTITY_CONFIG.SHIP.FRICTION;
   const input = e.add(ShipInput);
   input.thrustKey = controls.thrust;
   input.rotateLeftKey = controls.rotateLeft;
@@ -35,22 +35,16 @@ export function createShip(
   health.maxHp = ENTITY_CONFIG.SHIP.MAX_HP;
   health.healthBarTimer = 0;
   e.add(DefaultWeapon);
-  const pl = e.add(Player); pl.playerId = playerId;
+  e.add(Player).playerId = playerId;
   const col = e.add(Collider);
   col.radius = ENTITY_CONFIG.SHIP.RADIUS;
   col.category = CAT_PLAYER;
   col.mask = CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP;
+  e.add(DrawOrder).z = 60;
   e.add(Wraps);
-
-  const drawable = e.add(Drawable);
-  const stroke = e.add(StrokeStyle); stroke.style = color;
-  const order = e.add(DrawOrder); order.z = 60;
-
-  // Triangle ship shape: nose at (15,0), tail corners at (-10,±10)
-  drawable.addStatement(StrokeStyle, 100, 'ctx.strokeStyle = vars.stroke.style; ctx.lineWidth = 2', { stroke });
-  drawable.addStatement(Shape, 55,
-    `ctx.beginPath(); ctx.moveTo(15,0); ctx.lineTo(-10,10); ctx.lineTo(-10,-10); ctx.closePath(); ctx.stroke();`,
-    {});
-
+  e.add(Drawable);
+  const stroke = e.add(StrokeStyle); stroke.style = color; stroke.lineWidth = 2;
+  // Triangle: nose forward (+x), tail corners back-left/right
+  e.add(Shape).points = [{ x: 15, y: 0 }, { x: -10, y: 10 }, { x: -10, y: -10 }];
   return e;
 }

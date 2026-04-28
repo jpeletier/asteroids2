@@ -1,42 +1,41 @@
 import { world, renderPhase, renderCtx, canvasSize } from '../world';
 import { Position, Drawable, Rotation, DrawOrder } from '../components/index';
-import type { Entity } from '@vworlds/vecs';
 
-const renderQuery = world.query('RenderQuery').requires(Position, Drawable).track();
+let _ctx: CanvasRenderingContext2D | null = null;
 
-world.system('Render')
+const renderSystem = world.system('Render')
+  .requires(Position, Drawable)
   .phase(renderPhase)
-  .run(() => {
-    const ctx = renderCtx.ctx;
-    if (!ctx) return;
+  .track();
 
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
+renderSystem.run(() => {
+  _ctx = renderCtx.ctx ?? null;
+  if (!_ctx) return;
 
-    ctx.fillStyle = 'white';
-    for (const star of renderCtx.stars) {
-      ctx.globalAlpha = star.opacity;
-      ctx.beginPath();
-      ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1.0;
+  _ctx.fillStyle = 'black';
+  _ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
 
-    const entities = [...renderQuery.entities] as Entity[];
-    entities.sort((a, b) => {
-      const za = a.get(DrawOrder)?.z ?? 0;
-      const zb = b.get(DrawOrder)?.z ?? 0;
-      return za - zb;
-    });
+  _ctx.fillStyle = 'white';
+  for (const star of renderCtx.stars) {
+    _ctx.globalAlpha = star.opacity;
+    _ctx.beginPath();
+    _ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    _ctx.fill();
+  }
+  _ctx.globalAlpha = 1.0;
 
-    for (const e of entities) {
-      const pos = e.get(Position)!;
-      const drawable = e.get(Drawable)!;
-      const rot = e.get(Rotation);
-      ctx.save();
-      ctx.translate(pos.x, pos.y);
-      if (rot) ctx.rotate(rot.angle);
-      drawable.draw(ctx);
-      ctx.restore();
-    }
-  });
+  const sorted = [...renderSystem.entities].sort(
+    (a, b) => (a.get(DrawOrder)?.z ?? 0) - (b.get(DrawOrder)?.z ?? 0)
+  );
+
+  for (const e of sorted) {
+    const pos = e.get(Position)!;
+    const drawable = e.get(Drawable)!;
+    const rot = e.get(Rotation);
+    _ctx.save();
+    _ctx.translate(pos.x, pos.y);
+    if (rot) _ctx.rotate(rot.angle);
+    drawable.draw(_ctx);
+    _ctx.restore();
+  }
+});

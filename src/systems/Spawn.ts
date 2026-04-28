@@ -4,7 +4,7 @@ import { GAME_CONFIG } from '../constants';
 import { createAlien } from '../factories/Alien';
 import { createPickup } from '../factories/Pickup';
 
-const alienQuery = world.query('SpawnAliens').requires(Alien).track();
+const alienQuery = world.query('SpawnAliens').requires(Alien);
 
 world.system('Spawn')
   .phase(updatePhase)

@@ -4,8 +4,8 @@ import { createBullet } from '../factories/Bullet';
 import { CAT_ENEMY_BULLET, CAT_PLAYER, CAT_ASTEROID, ENTITY_CONFIG } from '../constants';
 import type { Entity } from '@vworlds/vecs';
 
-const asteroidQuery = world.query('AIAsteroids').requires(Position, Asteroid).track();
-const playerQuery = world.query('AIPlayers').requires(Position, Player).track();
+const asteroidQuery = world.query('AIAsteroids').requires(Position, Asteroid);
+const playerQuery = world.query('AIPlayers').requires(Position, Player);
 
 world.system('AlienAI')
   .requires(Position, Velocity, Alien, Rotation)
@@ -17,7 +17,7 @@ world.system('AlienAI')
     // Find closest asteroid
     let closestAst: Entity | null = null;
     let minAstDist = Infinity;
-    for (const ae of asteroidQuery.entities ) {
+    for (const ae of asteroidQuery.entities) {
       const ap = ae.get(Position)!;
       const d = Math.hypot(pos.x - ap.x, pos.y - ap.y);
       if (d < minAstDist) { minAstDist = d; closestAst = ae; }
