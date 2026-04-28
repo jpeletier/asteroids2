@@ -1,31 +1,27 @@
-import { describe, it, expect } from 'vitest';
-import { explode } from '../src/utils';
-import type { Entities } from '../src/types';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { world } from '../src/world';
+import { createParticle, explode } from '../src/factories/Particle';
+import { Particle } from '../src/components/index';
+import '../src/systems/Cleanup';
 
-function makeEntities(): Entities {
-  return {
-    players: [],
-    bullets: [],
-    asteroids: [],
-    particles: [],
-    aliens: [],
-    boss: null,
-    shieldPowerup: null,
-    laserPowerup: null,
-    auraPowerup: null,
-  };
+function countParticles(): number {
+  let count = 0;
+  (world as any)._forEachEntity((e: any) => {
+    if (e.get(Particle)) count++;
+  });
+  return count;
 }
 
 describe('explode', () => {
-  it('pushes the default number of particles (10) into entities', () => {
-    const entities = makeEntities();
-    explode(100, 200, '#ff0', entities);
-    expect(entities.particles).toHaveLength(10);
+  it('creates the default number of particles (10)', () => {
+    const before = countParticles();
+    explode(100, 200, '#ff0');
+    expect(countParticles() - before).toBe(10);
   });
 
-  it('pushes the specified count of particles into entities', () => {
-    const entities = makeEntities();
-    explode(0, 0, '#fff', entities, 25);
-    expect(entities.particles).toHaveLength(25);
+  it('creates the specified count of particles', () => {
+    const before = countParticles();
+    explode(0, 0, '#fff', 25);
+    expect(countParticles() - before).toBe(25);
   });
 });

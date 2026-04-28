@@ -1,5 +1,6 @@
 export const GAME_CONFIG = {
   ALIEN_SPAWN_INTERVAL: 15000,
+  ALIEN_CAP: 3,
   SHIELD_SPAWN_CHANCE: 0.7,
   SHIELD_SPAWN_INTERVAL: 10000,
   LASER_SPAWN_CHANCE: 0.3,
@@ -11,6 +12,7 @@ export const GAME_CONFIG = {
 export const ENTITY_CONFIG = {
   BULLET: {
     SPEED: 7,
+    LIFE: 100,
   },
   ASTEROID: {
     SPEED_FACTOR: 4,
@@ -25,12 +27,7 @@ export const ENTITY_CONFIG = {
     SHOOT_COOLDOWN_BASE: 60,
     SHOOT_COOLDOWN_RANGE: 40,
     TARGET_DIST_MAX: 400,
-  },
-  BOSS: {
-    RADIUS: 60,
-    HP: 50,
-    SPEED_X: 2,
-    TARGET_Y_FACTOR: 0.2,
+    ASTEROID_AVOID_DIST: 60,
   },
   SHIP: {
     RADIUS: 12,
@@ -50,8 +47,21 @@ export const ENTITY_CONFIG = {
 export const SCORING = {
   ASTEROID_BASE: 10,
   ALIEN: 100,
-  BOSS: 1000,
   SHIELD: 50,
   LASER: 75,
   AURA: 75,
 } as const;
+
+export const SHIELD_DAMAGE = {
+  BULLET: 300,
+  ALIEN_BODY: 600,
+  ASTEROID: 300,
+} as const;
+
+// Collision category bits
+export const CAT_PLAYER        = 1 << 0;
+export const CAT_ASTEROID      = 1 << 1;
+export const CAT_PLAYER_BULLET = 1 << 2;
+export const CAT_ENEMY_BULLET  = 1 << 3;
+export const CAT_ENEMY         = 1 << 4;
+export const CAT_PICKUP        = 1 << 5;

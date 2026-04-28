@@ -14,15 +14,18 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "jsdom": "^24.0.0",
+    "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
-    "vitest": "^1.6.0",
-    "@vitest/coverage-v8": "^1.6.0",
-    "jsdom": "^24.0.0",
-    "eslint": "^8.57.0",
-    "@typescript-eslint/parser": "^7.8.0",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "prettier": "^3.2.5",
-    "eslint-config-prettier": "^9.1.0"
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@vworlds/vecs": "^1.0.5"
   }
 }
