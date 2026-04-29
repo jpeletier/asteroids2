@@ -77,11 +77,16 @@ world.registerComponent(Keys);
 world.setExclusiveComponents(LaserWeapon, AuraWeapon, DefaultWeapon);
 
 // ── Singleton resource entity ─────────────────────────────────────────────
-export const resourceEntity = world.createEntity();
-export const canvasSize = resourceEntity.add(CanvasSize);
-export const gameState = resourceEntity.add(GameStateComp);
-export const renderCtx = resourceEntity.add(RenderContext);
-export const keys = resourceEntity.add(Keys);
+export const resourceEntity = world
+  .createEntity()
+  .add(CanvasSize)
+  .add(GameStateComp)
+  .add(RenderContext)
+  .add(Keys);
+export const canvasSize = resourceEntity.get(CanvasSize)!;
+export const gameState = resourceEntity.get(GameStateComp)!;
+export const renderCtx = resourceEntity.get(RenderContext)!;
+export const keys = resourceEntity.get(Keys)!;
 
 // ── Phases ────────────────────────────────────────────────────────────────
 export const updatePhase = world.addPhase('update');

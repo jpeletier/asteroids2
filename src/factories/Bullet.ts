@@ -24,15 +24,16 @@ export function createBullet(
   maskBits: number,
 ): void {
   const speed = ENTITY_CONFIG.BULLET.SPEED;
-  const e = world.createEntity();
-  e.set(Position, { x, y });
-  e.set(Velocity, { vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed });
-  e.set(Rotation, { angle });
-  e.set(Bullet, { ownerType });
-  e.set(Collider, { radius: 2, category: categoryBits, mask: maskBits });
-  e.set(Decay, { life: ENTITY_CONFIG.BULLET.LIFE, decay: 1 });
-  e.set(Drawable, { zIndex: 20 });
-  e.add(Wraps);
-  e.set(FillStyle, { style: color });
-  e.set(Arc, { radius: 2 });
+  world
+    .createEntity()
+    .set(Position, { x, y })
+    .set(Velocity, { vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed })
+    .set(Rotation, { angle })
+    .set(Bullet, { ownerType })
+    .set(Collider, { radius: 2, category: categoryBits, mask: maskBits })
+    .set(Decay, { life: ENTITY_CONFIG.BULLET.LIFE, decay: 1 })
+    .set(Drawable, { zIndex: 20 })
+    .add(Wraps)
+    .set(FillStyle, { style: color })
+    .set(Arc, { radius: 2 });
 }

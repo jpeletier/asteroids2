@@ -48,24 +48,25 @@ function makeEffectFunc(type: PickupType): (picker: Entity) => void {
 
 export function createPickup(type: PickupType): void {
   const cfg = PICKUP_CONFIG[type];
-  const e = world.createEntity();
-  e.set(Position, {
-    x: Math.random() * canvasSize.width,
-    y: Math.random() * canvasSize.height,
-  });
-  e.set(Velocity, {
-    vx: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
-    vy: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
-  });
-  e.set(Pickup, { effectFunc: makeEffectFunc(type) });
-  e.set(Collider, {
-    radius: ENTITY_CONFIG.POWERUP.RADIUS,
-    category: CAT_PICKUP,
-    mask: CAT_PLAYER,
-  });
-  e.set(Drawable, { zIndex: 50 });
-  e.add(Wraps);
-  e.set(StrokeStyle, { style: cfg.color, lineWidth: 2 });
-  e.set(Arc, { radius: ENTITY_CONFIG.POWERUP.RADIUS });
-  e.set(Label, { text: cfg.label, color: cfg.color });
+  world
+    .createEntity()
+    .set(Position, {
+      x: Math.random() * canvasSize.width,
+      y: Math.random() * canvasSize.height,
+    })
+    .set(Velocity, {
+      vx: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
+      vy: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
+    })
+    .set(Pickup, { effectFunc: makeEffectFunc(type) })
+    .set(Collider, {
+      radius: ENTITY_CONFIG.POWERUP.RADIUS,
+      category: CAT_PICKUP,
+      mask: CAT_PLAYER,
+    })
+    .set(Drawable, { zIndex: 50 })
+    .add(Wraps)
+    .set(StrokeStyle, { style: cfg.color, lineWidth: 2 })
+    .set(Arc, { radius: ENTITY_CONFIG.POWERUP.RADIUS })
+    .set(Label, { text: cfg.label, color: cfg.color });
 }

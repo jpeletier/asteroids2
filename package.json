@@ -32,6 +32,6 @@
     "*.ts": "prettier --write"
   },
   "dependencies": {
-    "@vworlds/vecs": "^1.0.6"
+    "@vworlds/vecs": "^1.0.7"
   }
 }

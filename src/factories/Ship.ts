@@ -33,41 +33,41 @@ export function createShip(
   playerId: 0 | 1,
   controls: Controls,
 ): Entity {
-  const e = world.createEntity();
-  e.set(Position, { x, y });
-  e.add(Velocity);
-  e.set(Rotation, { angle: 0 });
-  e.set(Thrust, { force: ENTITY_CONFIG.SHIP.THRUST_POWER });
-  e.set(Friction, { value: ENTITY_CONFIG.SHIP.FRICTION });
-  e.set(ShipInput, {
-    thrustKey: controls.thrust,
-    rotateLeftKey: controls.rotateLeft,
-    rotateRightKey: controls.rotateRight,
-    shootKey: controls.shoot,
-    shootCooldown: 0,
-  });
-  e.set(Health, {
-    hp: ENTITY_CONFIG.SHIP.MAX_HP,
-    maxHp: ENTITY_CONFIG.SHIP.MAX_HP,
-    healthBarTimer: 0,
-  });
-  e.add(DefaultWeapon);
-  e.set(Player, { playerId });
-  e.set(Collider, {
-    radius: ENTITY_CONFIG.SHIP.RADIUS,
-    category: CAT_PLAYER,
-    mask: CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP,
-  });
-  e.set(Drawable, { zIndex: 60 });
-  e.add(Wraps);
-  e.set(StrokeStyle, { style: color, lineWidth: 2 });
   // Triangle: nose forward (+x), tail corners back-left/right
-  e.set(Shape, {
-    points: [
-      { x: 15, y: 0 },
-      { x: -10, y: 10 },
-      { x: -10, y: -10 },
-    ],
-  });
-  return e;
+  return world
+    .createEntity()
+    .set(Position, { x, y })
+    .add(Velocity)
+    .set(Rotation, { angle: 0 })
+    .set(Thrust, { force: ENTITY_CONFIG.SHIP.THRUST_POWER })
+    .set(Friction, { value: ENTITY_CONFIG.SHIP.FRICTION })
+    .set(ShipInput, {
+      thrustKey: controls.thrust,
+      rotateLeftKey: controls.rotateLeft,
+      rotateRightKey: controls.rotateRight,
+      shootKey: controls.shoot,
+      shootCooldown: 0,
+    })
+    .set(Health, {
+      hp: ENTITY_CONFIG.SHIP.MAX_HP,
+      maxHp: ENTITY_CONFIG.SHIP.MAX_HP,
+      healthBarTimer: 0,
+    })
+    .add(DefaultWeapon)
+    .set(Player, { playerId })
+    .set(Collider, {
+      radius: ENTITY_CONFIG.SHIP.RADIUS,
+      category: CAT_PLAYER,
+      mask: CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP,
+    })
+    .set(Drawable, { zIndex: 60 })
+    .add(Wraps)
+    .set(StrokeStyle, { style: color, lineWidth: 2 })
+    .set(Shape, {
+      points: [
+        { x: 15, y: 0 },
+        { x: -10, y: 10 },
+        { x: -10, y: -10 },
+      ],
+    });
 }
