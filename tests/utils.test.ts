@@ -1,14 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { world } from '../src/world';
-import { createParticle, explode } from '../src/factories/Particle';
+import { explode } from '../src/factories/Particle';
 import { Particle } from '../src/components/index';
 import '../src/systems/Cleanup';
 
 function countParticles(): number {
   let count = 0;
-  (world as any)._forEachEntity((e: any) => {
-    if (e.get(Particle)) count++;
-  });
+  world.filter([Particle]).forEach(() => count++);
   return count;
 }
 

@@ -4,7 +4,7 @@
   "description": "A simple game",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -15,11 +15,11 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
     "@vitest/coverage-v8": "^1.6.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.0.0",
+    "typescript-eslint": "^8.0.0",
     "husky": "^9.1.7",
     "jsdom": "^24.0.0",
     "lint-staged": "^16.4.0",
@@ -29,9 +29,12 @@
     "vitest": "^1.6.0"
   },
   "lint-staged": {
-    "*.ts": "prettier --write"
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "dependencies": {
-    "@vworlds/vecs": "^1.0.7"
+    "@vworlds/vecs": "^1.0.8"
   }
 }

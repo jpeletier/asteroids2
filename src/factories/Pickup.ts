@@ -49,7 +49,7 @@ function makeEffectFunc(type: PickupType): (picker: Entity) => void {
 export function createPickup(type: PickupType): void {
   const cfg = PICKUP_CONFIG[type];
   world
-    .createEntity()
+    .entity()
     .set(Position, {
       x: Math.random() * canvasSize.width,
       y: Math.random() * canvasSize.height,

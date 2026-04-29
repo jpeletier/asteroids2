@@ -35,7 +35,7 @@ export function createShip(
 ): Entity {
   // Triangle: nose forward (+x), tail corners back-left/right
   return world
-    .createEntity()
+    .entity()
     .set(Position, { x, y })
     .add(Velocity)
     .set(Rotation, { angle: 0 })

@@ -78,7 +78,7 @@ world.setExclusiveComponents(LaserWeapon, AuraWeapon, DefaultWeapon);
 
 // ── Singleton resource entity ─────────────────────────────────────────────
 export const resourceEntity = world
-  .createEntity()
+  .entity()
   .add(CanvasSize)
   .add(GameStateComp)
   .add(RenderContext)

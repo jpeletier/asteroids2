@@ -25,7 +25,7 @@ export function createBullet(
 ): void {
   const speed = ENTITY_CONFIG.BULLET.SPEED;
   world
-    .createEntity()
+    .entity()
     .set(Position, { x, y })
     .set(Velocity, { vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed })
     .set(Rotation, { angle })

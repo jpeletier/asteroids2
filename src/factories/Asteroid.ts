@@ -36,7 +36,7 @@ export function createAsteroid(x: number, y: number, level: 1 | 2 | 3): void {
   }
 
   world
-    .createEntity()
+    .entity()
     .set(Position, { x, y })
     .set(Velocity, {
       vx: (Math.random() - 0.5) * (ENTITY_CONFIG.ASTEROID.SPEED_FACTOR - level),

@@ -1,5 +1,5 @@
-import { world, updatePhase, gameState } from '../world';
-import { Dead, Pickup } from '../components/index';
+import { world, updatePhase } from '../world';
+import { Dead } from '../components/index';
 
 world
   .system('Cleanup')

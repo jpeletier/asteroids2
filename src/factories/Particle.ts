@@ -12,7 +12,7 @@ import {
 
 export function createParticle(x: number, y: number, color: string): void {
   world
-    .createEntity()
+    .entity()
     .set(Position, { x, y })
     .set(Velocity, {
       vx: (Math.random() - 0.5) * 5,

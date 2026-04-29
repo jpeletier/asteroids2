@@ -21,7 +21,7 @@ import {
 export function createAlien(): void {
   // UFO-like diamond shape
   world
-    .createEntity()
+    .entity()
     .set(Position, {
       x: Math.random() < 0.5 ? -20 : canvasSize.width + 20,
       y: Math.random() * canvasSize.height,

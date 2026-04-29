@@ -7,9 +7,7 @@ import type { Entity } from '@vworlds/vecs';
 
 function destroyAllGameEntities(): void {
   const toDestroy: Entity[] = [];
-  (world as any)._forEachEntity((e: Entity) => {
-    if (e.get(Position)) toDestroy.push(e);
-  });
+  world.filter([Position]).forEach((e) => toDestroy.push(e));
   for (const e of toDestroy) e.destroy();
 }
 
