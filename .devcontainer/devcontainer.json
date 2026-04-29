@@ -1,0 +1,25 @@
+{
+  "name": "game",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
+  "remoteUser": "node",
+  "postCreateCommand": "npm install",
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": {
+      "label": "Vite Dev Server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "anthropic.claude-code"],
+      "settings": {
+        "claudeCode.allowDangerouslySkipPermissions": true
+      }
+    }
+  },
+  "mounts": [
+    // Claude Code auth — mounts ~/.claude from the host so login carries over seamlessly
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached"
+  ]
+}
