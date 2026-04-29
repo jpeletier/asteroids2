@@ -6,12 +6,10 @@ world
   .requires(Drawable, Arc)
   .phase(renderPhase)
   .enter([Drawable, Arc], (_e, [drawable, arc]) => {
-    drawable.addStatement(
-      Arc,
-      55,
-      'ctx.beginPath(); ctx.arc(0, 0, vars.arc.radius, vars.arc.startAngle, vars.arc.endAngle)',
-      { arc },
-    );
+    drawable.addStatement(Arc, 55, (ctx) => {
+      ctx.beginPath();
+      ctx.arc(0, 0, arc.radius, arc.startAngle, arc.endAngle);
+    });
   })
   .exit([Drawable], (_e, [drawable]) => {
     drawable.removeStatement(Arc);
