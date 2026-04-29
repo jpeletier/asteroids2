@@ -34,41 +34,40 @@ export function createShip(
   controls: Controls,
 ): Entity {
   const e = world.createEntity();
-  const pos = e.add(Position);
-  pos.x = x;
-  pos.y = y;
+  e.set(Position, { x, y });
   e.add(Velocity);
-  const rot = e.add(Rotation);
-  rot.angle = 0;
-  const thrust = e.add(Thrust);
-  thrust.force = ENTITY_CONFIG.SHIP.THRUST_POWER;
-  e.add(Friction).value = ENTITY_CONFIG.SHIP.FRICTION;
-  const input = e.add(ShipInput);
-  input.thrustKey = controls.thrust;
-  input.rotateLeftKey = controls.rotateLeft;
-  input.rotateRightKey = controls.rotateRight;
-  input.shootKey = controls.shoot;
-  input.shootCooldown = 0;
-  const health = e.add(Health);
-  health.hp = ENTITY_CONFIG.SHIP.MAX_HP;
-  health.maxHp = ENTITY_CONFIG.SHIP.MAX_HP;
-  health.healthBarTimer = 0;
+  e.set(Rotation, { angle: 0 });
+  e.set(Thrust, { force: ENTITY_CONFIG.SHIP.THRUST_POWER });
+  e.set(Friction, { value: ENTITY_CONFIG.SHIP.FRICTION });
+  e.set(ShipInput, {
+    thrustKey: controls.thrust,
+    rotateLeftKey: controls.rotateLeft,
+    rotateRightKey: controls.rotateRight,
+    shootKey: controls.shoot,
+    shootCooldown: 0,
+  });
+  e.set(Health, {
+    hp: ENTITY_CONFIG.SHIP.MAX_HP,
+    maxHp: ENTITY_CONFIG.SHIP.MAX_HP,
+    healthBarTimer: 0,
+  });
   e.add(DefaultWeapon);
-  e.add(Player).playerId = playerId;
-  const col = e.add(Collider);
-  col.radius = ENTITY_CONFIG.SHIP.RADIUS;
-  col.category = CAT_PLAYER;
-  col.mask = CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP;
-  e.add(Drawable).zIndex = 60;
+  e.set(Player, { playerId });
+  e.set(Collider, {
+    radius: ENTITY_CONFIG.SHIP.RADIUS,
+    category: CAT_PLAYER,
+    mask: CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP,
+  });
+  e.set(Drawable, { zIndex: 60 });
   e.add(Wraps);
-  const stroke = e.add(StrokeStyle);
-  stroke.style = color;
-  stroke.lineWidth = 2;
+  e.set(StrokeStyle, { style: color, lineWidth: 2 });
   // Triangle: nose forward (+x), tail corners back-left/right
-  e.add(Shape).points = [
-    { x: 15, y: 0 },
-    { x: -10, y: 10 },
-    { x: -10, y: -10 },
-  ];
+  e.set(Shape, {
+    points: [
+      { x: 15, y: 0 },
+      { x: -10, y: 10 },
+      { x: -10, y: -10 },
+    ],
+  });
   return e;
 }

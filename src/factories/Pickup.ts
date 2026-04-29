@@ -27,19 +27,19 @@ const PICKUP_CONFIG: Record<PickupType, { color: string; label: string }> = {
 function makeEffectFunc(type: PickupType): (picker: Entity) => void {
   return (picker: Entity) => {
     if (type === 'shield') {
-      const sh = picker.get(Shield) ?? picker.add(Shield);
-      sh.shieldTime = ENTITY_CONFIG.SHIP.SHIELD_DURATION;
+      picker.set(Shield, { shieldTime: ENTITY_CONFIG.SHIP.SHIELD_DURATION });
       gameState.score += SCORING.SHIELD;
       gameState.shieldPickupExists = false;
     } else if (type === 'laser') {
-      const lw = picker.add(LaserWeapon);
-      lw.shots = ENTITY_CONFIG.SHIP.LASER_SHOT_COUNT;
-      lw.firing = false;
-      lw.timer = 0;
+      picker.set(LaserWeapon, {
+        shots: ENTITY_CONFIG.SHIP.LASER_SHOT_COUNT,
+        firing: false,
+        timer: 0,
+      });
       gameState.score += SCORING.LASER;
       gameState.laserPickupExists = false;
     } else {
-      picker.add(AuraWeapon).shots = ENTITY_CONFIG.SHIP.AURA_SHOT_COUNT;
+      picker.set(AuraWeapon, { shots: ENTITY_CONFIG.SHIP.AURA_SHOT_COUNT });
       gameState.score += SCORING.AURA;
       gameState.auraPickupExists = false;
     }
@@ -49,24 +49,23 @@ function makeEffectFunc(type: PickupType): (picker: Entity) => void {
 export function createPickup(type: PickupType): void {
   const cfg = PICKUP_CONFIG[type];
   const e = world.createEntity();
-  const pos = e.add(Position);
-  pos.x = Math.random() * canvasSize.width;
-  pos.y = Math.random() * canvasSize.height;
-  const vel = e.add(Velocity);
-  vel.vx = (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR;
-  vel.vy = (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR;
-  e.add(Pickup).effectFunc = makeEffectFunc(type);
-  const col = e.add(Collider);
-  col.radius = ENTITY_CONFIG.POWERUP.RADIUS;
-  col.category = CAT_PICKUP;
-  col.mask = CAT_PLAYER;
-  e.add(Drawable).zIndex = 50;
+  e.set(Position, {
+    x: Math.random() * canvasSize.width,
+    y: Math.random() * canvasSize.height,
+  });
+  e.set(Velocity, {
+    vx: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
+    vy: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
+  });
+  e.set(Pickup, { effectFunc: makeEffectFunc(type) });
+  e.set(Collider, {
+    radius: ENTITY_CONFIG.POWERUP.RADIUS,
+    category: CAT_PICKUP,
+    mask: CAT_PLAYER,
+  });
+  e.set(Drawable, { zIndex: 50 });
   e.add(Wraps);
-  const stroke = e.add(StrokeStyle);
-  stroke.style = cfg.color;
-  stroke.lineWidth = 2;
-  e.add(Arc).radius = ENTITY_CONFIG.POWERUP.RADIUS;
-  const lbl = e.add(Label);
-  lbl.text = cfg.label;
-  lbl.color = cfg.color;
+  e.set(StrokeStyle, { style: cfg.color, lineWidth: 2 });
+  e.set(Arc, { radius: ENTITY_CONFIG.POWERUP.RADIUS });
+  e.set(Label, { text: cfg.label, color: cfg.color });
 }

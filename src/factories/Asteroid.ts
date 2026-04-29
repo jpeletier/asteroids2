@@ -29,27 +29,20 @@ export function createAsteroid(x: number, y: number, level: 1 | 2 | 3): void {
     '#aaa';
 
   const e = world.createEntity();
-  const pos = e.add(Position);
-  pos.x = x;
-  pos.y = y;
-  const vel = e.add(Velocity);
-  vel.vx =
-    (Math.random() - 0.5) * (ENTITY_CONFIG.ASTEROID.SPEED_FACTOR - level);
-  vel.vy =
-    (Math.random() - 0.5) * (ENTITY_CONFIG.ASTEROID.SPEED_FACTOR - level);
-  const ast = e.add(Asteroid);
-  ast.level = level;
-  ast.color = color;
-  const col = e.add(Collider);
-  col.radius = radius;
-  col.category = CAT_ASTEROID;
-  col.mask = CAT_PLAYER | CAT_PLAYER_BULLET | CAT_ENEMY_BULLET | CAT_ENEMY;
-  e.add(Drawable).zIndex = 30;
+  e.set(Position, { x, y });
+  e.set(Velocity, {
+    vx: (Math.random() - 0.5) * (ENTITY_CONFIG.ASTEROID.SPEED_FACTOR - level),
+    vy: (Math.random() - 0.5) * (ENTITY_CONFIG.ASTEROID.SPEED_FACTOR - level),
+  });
+  e.set(Asteroid, { level, color });
+  e.set(Collider, {
+    radius,
+    category: CAT_ASTEROID,
+    mask: CAT_PLAYER | CAT_PLAYER_BULLET | CAT_ENEMY_BULLET | CAT_ENEMY,
+  });
+  e.set(Drawable, { zIndex: 30 });
   e.add(Wraps);
-  const stroke = e.add(StrokeStyle);
-  stroke.style = color;
-  stroke.lineWidth = 2;
-  const shape = e.add(Shape);
+  e.set(StrokeStyle, { style: color, lineWidth: 2 });
   const vert = 5 + Math.floor(Math.random() * 5);
   const points: Point[] = [];
   for (let i = 0; i < vert; i++) {
@@ -57,5 +50,5 @@ export function createAsteroid(x: number, y: number, level: 1 | 2 | 3): void {
     const a = (i / vert) * Math.PI * 2;
     points.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
   }
-  shape.points = points;
+  e.set(Shape, { points });
 }
