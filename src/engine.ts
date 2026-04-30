@@ -5,7 +5,43 @@ import { Boss } from './entities/Boss';
 import { ShieldPowerup, LaserPowerup, AuraPowerup } from './entities/Powerup';
 import { Asteroid } from './entities/Asteroid';
 import { GAME_CONFIG } from './constants';
-import type { Entities, GameState, GameContext, Star } from './types';
+import type { Entities, GameState, GameContext, Star, RandomClock } from './types';
+
+function randomBetween(min: number, max: number): number {
+  return min + Math.random() * (max - min);
+}
+
+function makeRandomClock(minWait: number, maxWait: number, effectFunc: () => void): RandomClock {
+  return {
+    minWait,
+    maxWait,
+    effectFunc,
+    nextTick: Date.now() + randomBetween(minWait, maxWait),
+  };
+}
+
+function tickRandomClocks(clocks: RandomClock[]): void {
+  const now = Date.now();
+  for (const clock of clocks) {
+    if (now >= clock.nextTick) {
+      clock.effectFunc();
+      clock.nextTick = now + randomBetween(clock.minWait, clock.maxWait);
+    }
+  }
+}
+
+function runDecaySystem(entities: Entities): void {
+  const now = Date.now();
+  if (entities.shieldPowerup && now >= entities.shieldPowerup.decay.expiresAt) {
+    entities.shieldPowerup = null;
+  }
+  if (entities.laserPowerup && now >= entities.laserPowerup.decay.expiresAt) {
+    entities.laserPowerup = null;
+  }
+  if (entities.auraPowerup && now >= entities.auraPowerup.decay.expiresAt) {
+    entities.auraPowerup = null;
+  }
+}
 
 export class GameEngine {
   canvas: HTMLCanvasElement;
@@ -19,10 +55,7 @@ export class GameEngine {
   gameState: GameState;
   entities: Entities;
   stars: Star[];
-  lastAlienSpawnTime: number;
-  lastShieldSpawnTime: number;
-  lastLaserSpawnTime: number;
-  lastAuraSpawnTime: number;
+  spawners: RandomClock[];
   keys: Record<string, boolean>;
 
   constructor(
@@ -54,10 +87,7 @@ export class GameEngine {
       auraPowerup: null,
     };
     this.stars = [];
-    this.lastAlienSpawnTime = 0;
-    this.lastShieldSpawnTime = 0;
-    this.lastLaserSpawnTime = 0;
-    this.lastAuraSpawnTime = 0;
+    this.spawners = [];
     this.keys = {};
 
     window.addEventListener('keydown', (e) => (this.keys[e.code] = true));
@@ -69,6 +99,37 @@ export class GameEngine {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
     this.stars = initStars(this.canvas);
+  }
+
+  private createSpawners(): RandomClock[] {
+    return [
+      makeRandomClock(GAME_CONFIG.ALIEN_SPAWN_INTERVAL, GAME_CONFIG.ALIEN_SPAWN_INTERVAL, () => {
+        if (this.gameState === 'playing' && this.entities.aliens.length < 3) {
+          this.entities.aliens.push(new AlienShip(this.canvas));
+        }
+      }),
+      makeRandomClock(GAME_CONFIG.SHIELD_SPAWN_INTERVAL, GAME_CONFIG.SHIELD_SPAWN_INTERVAL, () => {
+        if (this.gameState === 'playing' && !this.entities.shieldPowerup) {
+          if (Math.random() < GAME_CONFIG.SHIELD_SPAWN_CHANCE) {
+            this.entities.shieldPowerup = new ShieldPowerup();
+          }
+        }
+      }),
+      makeRandomClock(GAME_CONFIG.LASER_SPAWN_INTERVAL, GAME_CONFIG.LASER_SPAWN_INTERVAL, () => {
+        if (this.gameState === 'playing' && !this.entities.laserPowerup) {
+          if (Math.random() < GAME_CONFIG.LASER_SPAWN_CHANCE) {
+            this.entities.laserPowerup = new LaserPowerup();
+          }
+        }
+      }),
+      makeRandomClock(GAME_CONFIG.AURA_SPAWN_INTERVAL, GAME_CONFIG.AURA_SPAWN_INTERVAL, () => {
+        if (this.gameState === 'playing' && !this.entities.auraPowerup) {
+          if (Math.random() < GAME_CONFIG.AURA_SPAWN_CHANCE) {
+            this.entities.auraPowerup = new AuraPowerup();
+          }
+        }
+      }),
+    ];
   }
 
   init(): void {
@@ -104,10 +165,7 @@ export class GameEngine {
     this.wave = 1;
     this.updateUI();
     this.msgEl.innerText = '';
-    this.lastAlienSpawnTime = Date.now();
-    this.lastShieldSpawnTime = Date.now();
-    this.lastLaserSpawnTime = Date.now();
-    this.lastAuraSpawnTime = Date.now();
+    this.spawners = this.createSpawners();
   }
 
   updateUI(): void {
@@ -139,57 +197,10 @@ export class GameEngine {
   update(): void {
     if (this.gameState !== 'playing' && this.gameState !== 'boss') return;
 
-    const now = Date.now();
     const context = this.getContext();
 
-    if (
-      this.gameState === 'playing' &&
-      now - this.lastAlienSpawnTime > GAME_CONFIG.ALIEN_SPAWN_INTERVAL &&
-      this.entities.aliens.length < 3
-    ) {
-      this.entities.aliens.push(new AlienShip(this.canvas));
-      this.lastAlienSpawnTime = now;
-    }
-
-    if (
-      this.gameState === 'playing' &&
-      !this.entities.shieldPowerup &&
-      !this.entities.laserPowerup &&
-      now - this.lastShieldSpawnTime > GAME_CONFIG.SHIELD_SPAWN_INTERVAL
-    ) {
-      if (Math.random() < GAME_CONFIG.SHIELD_SPAWN_CHANCE) {
-        this.entities.shieldPowerup = new ShieldPowerup();
-        this.lastShieldSpawnTime = now;
-      } else {
-        this.lastShieldSpawnTime = now;
-      }
-    }
-
-    if (
-      this.gameState === 'playing' &&
-      !this.entities.laserPowerup &&
-      now - this.lastLaserSpawnTime > GAME_CONFIG.LASER_SPAWN_INTERVAL
-    ) {
-      if (Math.random() < GAME_CONFIG.LASER_SPAWN_CHANCE) {
-        this.entities.laserPowerup = new LaserPowerup();
-        this.lastLaserSpawnTime = now;
-      } else {
-        this.lastLaserSpawnTime = now;
-      }
-    }
-
-    if (
-      this.gameState === 'playing' &&
-      !this.entities.auraPowerup &&
-      now - this.lastAuraSpawnTime > GAME_CONFIG.AURA_SPAWN_INTERVAL
-    ) {
-      if (Math.random() < GAME_CONFIG.AURA_SPAWN_CHANCE) {
-        this.entities.auraPowerup = new AuraPowerup();
-        this.lastAuraSpawnTime = now;
-      } else {
-        this.lastAuraSpawnTime = now;
-      }
-    }
+    tickRandomClocks(this.spawners);
+    runDecaySystem(this.entities);
 
     this.entities.players.forEach((p) => p.update(context));
     this.entities.bullets.forEach((b) => b.update(this.canvas));

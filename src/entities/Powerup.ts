@@ -1,4 +1,5 @@
-import { ENTITY_CONFIG } from '../constants';
+import { ENTITY_CONFIG, GAME_CONFIG } from '../constants';
+import type { Decay } from '../types';
 
 class Powerup {
   x: number;
@@ -8,6 +9,7 @@ class Powerup {
   vy: number;
   color: string;
   label: string;
+  decay: Decay;
 
   constructor(x: number | undefined, y: number | undefined, color: string, label: string) {
     this.x = x ?? Math.random() * window.innerWidth;
@@ -17,6 +19,7 @@ class Powerup {
     this.vy = (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR;
     this.color = color;
     this.label = label;
+    this.decay = { expiresAt: Date.now() + GAME_CONFIG.POWERUP_LIFETIME };
   }
 
   update(canvas: HTMLCanvasElement): void {

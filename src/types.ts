@@ -55,3 +55,14 @@ export interface Point {
   x: number;
   y: number;
 }
+
+export interface RandomClock {
+  minWait: number;
+  maxWait: number;
+  effectFunc: () => void;
+  nextTick: number;
+}
+
+export interface Decay {
+  expiresAt: number;
+}
