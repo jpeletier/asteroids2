@@ -16,7 +16,7 @@ function makeRandomClock(minWait: number, maxWait: number, effectFunc: () => voi
     minWait,
     maxWait,
     effectFunc,
-    nextTick: Date.now() + randomBetween(minWait, maxWait),
+    nextTick: Date.now() + randomBetween(0, maxWait),
   };
 }
 
