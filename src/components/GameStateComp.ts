@@ -13,4 +13,6 @@ export class GameStateComp extends Component {
   auraPickupExists = false;
   rocketPickupExists = false;
   lastRocketSpawnTime = 0;
+  healthPickupExists = false;
+  lastHealthSpawnTime = 0;
 }

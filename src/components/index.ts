@@ -19,6 +19,7 @@ export { AuraWeapon } from './AuraWeapon';
 export { RocketWeapon } from './RocketWeapon';
 export { DefaultWeapon } from './DefaultWeapon';
 export { Pickup } from './Pickup';
+export { HealthPickup } from './HealthPickup';
 export { Player } from './Player';
 export { ShipInput } from './ShipInput';
 export { Bullet } from './Bullet';

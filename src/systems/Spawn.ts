@@ -64,4 +64,15 @@ world
       }
       gameState.lastRocketSpawnTime = now;
     }
+
+    if (
+      !gameState.healthPickupExists &&
+      now - gameState.lastHealthSpawnTime > GAME_CONFIG.HEALTH_SPAWN_INTERVAL
+    ) {
+      if (Math.random() < GAME_CONFIG.HEALTH_SPAWN_CHANCE) {
+        createPickup('health');
+        gameState.healthPickupExists = true;
+      }
+      gameState.lastHealthSpawnTime = now;
+    }
   });

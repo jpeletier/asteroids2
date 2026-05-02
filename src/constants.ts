@@ -9,6 +9,8 @@ export const GAME_CONFIG = {
   AURA_SPAWN_INTERVAL: 18000,
   ROCKET_SPAWN_CHANCE: 0.25,
   ROCKET_SPAWN_INTERVAL: 20000,
+  HEALTH_SPAWN_CHANCE: 0.4,
+  HEALTH_SPAWN_INTERVAL: 12000,
 } as const;
 
 export const ENTITY_CONFIG = {
@@ -61,6 +63,8 @@ export const SCORING = {
   LASER: 75,
   AURA: 75,
   ROCKET: 75,
+  HEALTH_SMALL: 50,
+  HEALTH_LARGE: 75,
 } as const;
 
 export const SHIELD_DAMAGE = {

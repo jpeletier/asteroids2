@@ -21,6 +21,7 @@ import {
   RocketWeapon,
   DefaultWeapon,
   Pickup,
+  HealthPickup,
   Player,
   ShipInput,
   Bullet,
@@ -62,6 +63,7 @@ world.registerComponent(AuraWeapon);
 world.registerComponent(RocketWeapon);
 world.registerComponent(DefaultWeapon);
 world.registerComponent(Pickup);
+world.registerComponent(HealthPickup);
 world.registerComponent(Player);
 world.registerComponent(ShipInput);
 world.registerComponent(Bullet);

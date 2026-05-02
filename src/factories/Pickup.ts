@@ -4,6 +4,7 @@ import {
   Position,
   Velocity,
   Pickup,
+  HealthPickup,
   Collider,
   Drawable,
   Arc,
@@ -14,20 +15,24 @@ import {
   AuraWeapon,
   RocketWeapon,
   Shield,
+  Health,
 } from '../components/index';
 import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, SCORING } from '../constants';
 
-type PickupType = 'shield' | 'laser' | 'aura' | 'rocket';
+type PickupType = 'shield' | 'laser' | 'aura' | 'rocket' | 'health';
 
 const PICKUP_CONFIG: Record<PickupType, { color: string; label: string }> = {
   shield: { color: '#0f0', label: 'S' },
   laser: { color: '#f00', label: 'L' },
   aura: { color: '#3af', label: 'A' },
   rocket: { color: '#ff6600', label: 'R' },
+  health: { color: '#fff', label: '' }, // label set dynamically per variant
 };
 
-function makeEffectFunc(type: PickupType): (picker: Entity) => void {
-  return (picker: Entity) => {
+function makeEffectFunc(
+  type: PickupType,
+): (picker: Entity, source: Entity) => void {
+  return (picker: Entity, source: Entity) => {
     if (type === 'shield') {
       picker.set(Shield, { shieldTime: ENTITY_CONFIG.SHIP.SHIELD_DURATION });
       gameState.score += SCORING.SHIELD;
@@ -44,17 +49,34 @@ function makeEffectFunc(type: PickupType): (picker: Entity) => void {
       picker.set(AuraWeapon, { shots: ENTITY_CONFIG.SHIP.AURA_SHOT_COUNT });
       gameState.score += SCORING.AURA;
       gameState.auraPickupExists = false;
-    } else {
+    } else if (type === 'rocket') {
       picker.set(RocketWeapon, { shots: ENTITY_CONFIG.ROCKET.SHOT_COUNT });
       gameState.score += SCORING.ROCKET;
       gameState.rocketPickupExists = false;
+    } else {
+      const hp = source.get(HealthPickup)!;
+      const health = picker.get(Health);
+      if (health) {
+        health.hp = Math.min(
+          health.hp + health.maxHp * hp.amount,
+          health.maxHp,
+        );
+        health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
+      }
+      gameState.score +=
+        hp.amount <= 0.25 ? SCORING.HEALTH_SMALL : SCORING.HEALTH_LARGE;
+      gameState.healthPickupExists = false;
     }
   };
 }
 
 export function createPickup(type: PickupType): void {
   const cfg = PICKUP_CONFIG[type];
-  world
+
+  const amount = type === 'health' ? (Math.random() < 0.5 ? 0.25 : 0.5) : 0;
+  const label = type === 'health' ? (amount <= 0.25 ? '+' : '++') : cfg.label;
+
+  const entity = world
     .entity()
     .set(Position, {
       x: Math.random() * canvasSize.width,
@@ -74,5 +96,9 @@ export function createPickup(type: PickupType): void {
     .add(Wraps)
     .set(StrokeStyle, { style: cfg.color, lineWidth: 2 })
     .set(Arc, { radius: ENTITY_CONFIG.POWERUP.RADIUS })
-    .set(Label, { text: cfg.label, color: cfg.color });
+    .set(Label, { text: label, color: cfg.color });
+
+  if (type === 'health') {
+    entity.set(HealthPickup, { amount });
+  }
 }

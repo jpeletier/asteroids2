@@ -118,7 +118,7 @@ registerCollisionEffect(BIT_PLAYER, BIT_PICKUP, (player, pickup) => {
   const pu = pickup.get(Pickup);
   if (!pu || pickup.get(Dead)) return;
   const { x, y } = getPos(player);
-  pu.effectFunc(player);
+  pu.effectFunc(player, pickup);
   explode(x, y, '#fff', 20);
   pickup.add(Dead);
 });

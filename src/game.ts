@@ -26,6 +26,8 @@ export function initGame(): void {
   gameState.auraPickupExists = false;
   gameState.rocketPickupExists = false;
   gameState.lastRocketSpawnTime = Date.now();
+  gameState.healthPickupExists = false;
+  gameState.lastHealthSpawnTime = Date.now();
 
   if (msgEl) msgEl.innerText = '';
 
