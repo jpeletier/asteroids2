@@ -1,6 +1,7 @@
 import { world, initDOM } from './world';
 import { initGame } from './game';
 import { setInitGameCallback } from './systems/Collision';
+import { initCheats } from './cheats';
 
 window.addEventListener('DOMContentLoaded', () => {
   const canvasEl = document.getElementById('gameCanvas');
@@ -14,6 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   initDOM(canvasEl as HTMLCanvasElement, scoreEl, waveEl, msgEl);
   setInitGameCallback(initGame);
+  initCheats();
 
   // Start world after all systems (imported via game.ts → systems/index) are registered
   world.start();
