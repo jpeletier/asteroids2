@@ -9,8 +9,6 @@ import {
 } from '../components/index';
 import { ENTITY_CONFIG } from '../constants';
 
-const boomerangQuery = world.query('Boomerangs').requires(Boomerang);
-
 world
   .system('BoomerangSystem')
   .requires(Position, Velocity, Boomerang)
@@ -38,18 +36,15 @@ world
         }
       }
     }
-  });
-
-world
-  .system('BoomerangWeaponEnd')
-  .requires(BoomerangWeapon)
-  .phase(updatePhase)
-  .each([BoomerangWeapon], (e, [bw]) => {
-    if (bw.shots > 0) return;
-    for (const b of boomerangQuery.entities) {
-      if (b.get(Dead)) continue;
-      if (b.get(Boomerang)?.owner === e) return;
+  })
+  .exit([Boomerang], (e, [boom]) => {
+    const owner = boom.owner;
+    if (!owner) return;
+    const bw = owner.get(BoomerangWeapon);
+    if (!bw) return;
+    bw.inFlight.delete(e);
+    if (bw.shots === 0 && bw.inFlight.size === 0) {
+      owner.remove(BoomerangWeapon);
+      owner.add(DefaultWeapon);
     }
-    e.remove(BoomerangWeapon);
-    e.add(DefaultWeapon);
   });

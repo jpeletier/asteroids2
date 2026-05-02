@@ -6,6 +6,7 @@ import {
   Rotation,
   AngularVelocity,
   Boomerang,
+  BoomerangWeapon,
   Collider,
   Decay,
   Drawable,
@@ -30,7 +31,7 @@ export function createBoomerang(
   // Spawn just outside the player's catch radius so we don't trigger an
   // immediate self-catch on frame 0. Ship radius (12) + boomerang radius (5).
   const spawnOffset = ENTITY_CONFIG.SHIP.RADIUS + cfg.RADIUS + 4;
-  world
+  const entity = world
     .entity()
     .set(Position, {
       x: x + Math.cos(angle) * spawnOffset,
@@ -61,4 +62,5 @@ export function createBoomerang(
         { x: 5, y: 1 },
       ],
     });
+  owner.get(BoomerangWeapon)?.inFlight.add(entity);
 }
