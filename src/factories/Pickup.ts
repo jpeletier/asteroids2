@@ -12,16 +12,18 @@ import {
   Wraps,
   LaserWeapon,
   AuraWeapon,
+  RocketWeapon,
   Shield,
 } from '../components/index';
 import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, SCORING } from '../constants';
 
-type PickupType = 'shield' | 'laser' | 'aura';
+type PickupType = 'shield' | 'laser' | 'aura' | 'rocket';
 
 const PICKUP_CONFIG: Record<PickupType, { color: string; label: string }> = {
   shield: { color: '#0f0', label: 'S' },
   laser: { color: '#f00', label: 'L' },
   aura: { color: '#3af', label: 'A' },
+  rocket: { color: '#ff6600', label: 'R' },
 };
 
 function makeEffectFunc(type: PickupType): (picker: Entity) => void {
@@ -38,10 +40,14 @@ function makeEffectFunc(type: PickupType): (picker: Entity) => void {
       });
       gameState.score += SCORING.LASER;
       gameState.laserPickupExists = false;
-    } else {
+    } else if (type === 'aura') {
       picker.set(AuraWeapon, { shots: ENTITY_CONFIG.SHIP.AURA_SHOT_COUNT });
       gameState.score += SCORING.AURA;
       gameState.auraPickupExists = false;
+    } else {
+      picker.set(RocketWeapon, { shots: ENTITY_CONFIG.ROCKET.SHOT_COUNT });
+      gameState.score += SCORING.ROCKET;
+      gameState.rocketPickupExists = false;
     }
   };
 }

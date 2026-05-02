@@ -7,6 +7,7 @@ import './FrictionSystem';
 import './Wrap';
 import './Shooting';
 import './LaserSystem';
+import './RocketSystem';
 import './ShieldSystem';
 import './DecaySystem';
 import './HealthSystem';

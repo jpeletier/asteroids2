@@ -18,11 +18,13 @@ import {
   Shield,
   LaserWeapon,
   AuraWeapon,
+  RocketWeapon,
   DefaultWeapon,
   Pickup,
   Player,
   ShipInput,
   Bullet,
+  Rocket,
   Asteroid,
   Alien,
   Particle,
@@ -57,11 +59,13 @@ world.registerComponent(Health);
 world.registerComponent(Shield);
 world.registerComponent(LaserWeapon);
 world.registerComponent(AuraWeapon);
+world.registerComponent(RocketWeapon);
 world.registerComponent(DefaultWeapon);
 world.registerComponent(Pickup);
 world.registerComponent(Player);
 world.registerComponent(ShipInput);
 world.registerComponent(Bullet);
+world.registerComponent(Rocket);
 world.registerComponent(Asteroid);
 world.registerComponent(Alien);
 world.registerComponent(Particle);
@@ -74,7 +78,12 @@ world.registerComponent(RenderContext);
 world.registerComponent(Keys);
 
 // Weapons are mutually exclusive
-world.setExclusiveComponents(LaserWeapon, AuraWeapon, DefaultWeapon);
+world.setExclusiveComponents(
+  LaserWeapon,
+  AuraWeapon,
+  RocketWeapon,
+  DefaultWeapon,
+);
 
 // ── Singleton resource entity ─────────────────────────────────────────────
 export const resourceEntity = world

@@ -7,6 +7,8 @@ export const GAME_CONFIG = {
   LASER_SPAWN_INTERVAL: 15000,
   AURA_SPAWN_CHANCE: 0.25,
   AURA_SPAWN_INTERVAL: 18000,
+  ROCKET_SPAWN_CHANCE: 0.25,
+  ROCKET_SPAWN_INTERVAL: 20000,
 } as const;
 
 export const ENTITY_CONFIG = {
@@ -29,6 +31,14 @@ export const ENTITY_CONFIG = {
     TARGET_DIST_MAX: 400,
     ASTEROID_AVOID_DIST: 60,
   },
+  ROCKET: {
+    SPEED: 5,
+    LIFE: 400,
+    STRAIGHT_FRAMES: 30,
+    HOME_RANGE: 250,
+    TURN_RATE: 0.08,
+    SHOT_COUNT: 5,
+  },
   SHIP: {
     RADIUS: 12,
     FRICTION: 0.98,
@@ -50,6 +60,7 @@ export const SCORING = {
   SHIELD: 50,
   LASER: 75,
   AURA: 75,
+  ROCKET: 75,
 } as const;
 
 export const SHIELD_DAMAGE = {

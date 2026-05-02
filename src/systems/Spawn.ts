@@ -53,4 +53,15 @@ world
       }
       gameState.lastAuraSpawnTime = now;
     }
+
+    if (
+      !gameState.rocketPickupExists &&
+      now - gameState.lastRocketSpawnTime > GAME_CONFIG.ROCKET_SPAWN_INTERVAL
+    ) {
+      if (Math.random() < GAME_CONFIG.ROCKET_SPAWN_CHANCE) {
+        createPickup('rocket');
+        gameState.rocketPickupExists = true;
+      }
+      gameState.lastRocketSpawnTime = now;
+    }
   });

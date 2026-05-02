@@ -5,10 +5,12 @@ import {
   ShipInput,
   LaserWeapon,
   AuraWeapon,
+  RocketWeapon,
   DefaultWeapon,
   StrokeStyle,
 } from '../components/index';
 import { createBullet } from '../factories/Bullet';
+import { createRocket } from '../factories/Rocket';
 import {
   CAT_PLAYER_BULLET,
   CAT_ASTEROID,
@@ -26,6 +28,7 @@ world
     const color = e.get(StrokeStyle)?.style ?? '#fff';
     const aura = e.get(AuraWeapon);
     const laser = e.get(LaserWeapon);
+    const rocketWeapon = e.get(RocketWeapon);
 
     if (aura && aura.shots > 0) {
       for (let i = 0; i < 8; i++) {
@@ -49,6 +52,14 @@ world
       laser.firing = true;
       laser.timer = ENTITY_CONFIG.SHIP.LASER_TIMER;
       laser.shots--;
+      input.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
+    } else if (rocketWeapon && rocketWeapon.shots > 0) {
+      createRocket(pos.x, pos.y, rot.angle);
+      rocketWeapon.shots--;
+      if (rocketWeapon.shots <= 0) {
+        e.remove(RocketWeapon);
+        e.add(DefaultWeapon);
+      }
       input.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
     } else if (e.get(DefaultWeapon)) {
       createBullet(

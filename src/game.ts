@@ -24,6 +24,8 @@ export function initGame(): void {
   gameState.shieldPickupExists = false;
   gameState.laserPickupExists = false;
   gameState.auraPickupExists = false;
+  gameState.rocketPickupExists = false;
+  gameState.lastRocketSpawnTime = Date.now();
 
   if (msgEl) msgEl.innerText = '';
 
