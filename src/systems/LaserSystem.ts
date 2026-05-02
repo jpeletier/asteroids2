@@ -6,7 +6,6 @@ import {
   Collider,
   Asteroid,
   Alien,
-  Dead,
   DefaultWeapon,
 } from '../components/index';
 import { distToSegment } from '../utils';
@@ -50,7 +49,6 @@ world
       const apos = ae.get(Position)!;
       const acol = ae.get(Collider)!;
       const acomp = ae.get(Asteroid)!;
-      if (ae.get(Dead)) continue;
       if (distToSegment({ x: apos.x, y: apos.y }, v, w) < acol.radius) {
         explode(apos.x, apos.y, acomp.color);
         if (acomp.level > 1) {
@@ -58,7 +56,7 @@ world
           createAsteroid(apos.x, apos.y, nl);
           createAsteroid(apos.x, apos.y, nl);
         }
-        ae.add(Dead);
+        ae.destroy();
         gameState.score += SCORING.ASTEROID_BASE * acomp.level;
       }
     }
@@ -66,10 +64,9 @@ world
     for (const ale of alienOnlyQuery.entities) {
       const alpos = ale.get(Position)!;
       const alcol = ale.get(Collider)!;
-      if (ale.get(Dead)) continue;
       if (distToSegment({ x: alpos.x, y: alpos.y }, v, w) < alcol.radius) {
         explode(alpos.x, alpos.y, '#ffaa00', 15);
-        ale.add(Dead);
+        ale.destroy();
         gameState.score += SCORING.ALIEN;
       }
     }

@@ -32,7 +32,6 @@ export { Alien } from './Alien';
 export { Particle } from './Particle';
 export { Decay } from './Decay';
 export { Wraps } from './Wraps';
-export { Dead } from './Dead';
 export { CanvasSize } from './CanvasSize';
 export { GameStateComp } from './GameStateComp';
 export { RenderContext } from './RenderContext';

@@ -16,7 +16,6 @@ import './HealthSystem';
 import './Collision';
 import './RandomClockSystem';
 import './Wave';
-import './Cleanup';
 
 // Render phase systems
 import './Render';

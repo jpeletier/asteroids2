@@ -5,7 +5,6 @@ import {
   Boomerang,
   BoomerangWeapon,
   DefaultWeapon,
-  Dead,
 } from '../components/index';
 import { ENTITY_CONFIG } from '../constants';
 
@@ -15,7 +14,7 @@ world
   .phase(updatePhase)
   .each([Position, Velocity, Boomerang], (_e, [pos, vel, boom]) => {
     const owner = boom.owner;
-    if (owner && !owner.get(Dead)) {
+    if (owner && owner.get(Position)) {
       const op = owner.get(Position);
       if (op) {
         const dx = op.x - pos.x;

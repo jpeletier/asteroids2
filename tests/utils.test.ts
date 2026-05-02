@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { world } from '../src/world';
 import { explode } from '../src/factories/Particle';
 import { Particle } from '../src/components/index';
-import '../src/systems/Cleanup';
 
 function countParticles(): number {
   let count = 0;

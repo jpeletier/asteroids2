@@ -34,7 +34,6 @@ import {
   Particle,
   Decay,
   Wraps,
-  Dead,
   CanvasSize,
   GameStateComp,
   RenderContext,
@@ -80,7 +79,6 @@ world.registerComponent(Alien);
 world.registerComponent(Particle);
 world.registerComponent(Decay);
 world.registerComponent(Wraps);
-world.registerComponent(Dead);
 world.registerComponent(CanvasSize);
 world.registerComponent(GameStateComp);
 world.registerComponent(RenderContext);

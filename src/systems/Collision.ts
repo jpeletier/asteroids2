@@ -1,7 +1,6 @@
 import { world, updatePhase, gameState, msgEl } from '../world';
 import {
   Collider,
-  Dead,
   Shield,
   Health,
   Asteroid,
@@ -120,16 +119,15 @@ function getPos(e: Entity): { x: number; y: number } {
 // Player ↔ Pickup
 registerCollisionEffect(BIT_PLAYER, BIT_PICKUP, (player, pickup) => {
   const pu = pickup.get(Pickup);
-  if (!pu || pickup.get(Dead)) return;
+  if (!pu) return;
   const { x, y } = getPos(player);
   pu.effectFunc(player, pickup);
   explode(x, y, '#fff', 20);
-  pickup.add(Dead);
+  pickup.destroy();
 });
 
 // Player Bullet ↔ Asteroid
 registerCollisionEffect(BIT_PLAYER_BULLET, BIT_ASTEROID, (bullet, asteroid) => {
-  if (bullet.get(Dead) || asteroid.get(Dead)) return;
   const acomp = asteroid.get(Asteroid)!;
   const { x, y } = getPos(asteroid);
   explode(x, y, acomp.color);
@@ -138,14 +136,13 @@ registerCollisionEffect(BIT_PLAYER_BULLET, BIT_ASTEROID, (bullet, asteroid) => {
     createAsteroid(x, y, nl);
     createAsteroid(x, y, nl);
   }
-  bullet.add(Dead);
-  asteroid.add(Dead);
+  bullet.destroy();
+  asteroid.destroy();
   gameState.score += SCORING.ASTEROID_BASE * acomp.level;
 });
 
 // Player Bullet ↔ Alien
 registerCollisionEffect(BIT_PLAYER_BULLET, BIT_ENEMY, (bullet, alien) => {
-  if (bullet.get(Dead) || alien.get(Dead)) return;
   const health = alien.get(Health);
   if (health) {
     const damage = bullet.get(Rocket)
@@ -154,35 +151,32 @@ registerCollisionEffect(BIT_PLAYER_BULLET, BIT_ENEMY, (bullet, alien) => {
     health.hp -= damage;
     health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
     if (health.hp > 0) {
-      bullet.add(Dead);
+      bullet.destroy();
       return;
     }
   }
   explode(getPos(alien).x, getPos(alien).y, '#ffaa00', 15);
-  bullet.add(Dead);
-  alien.add(Dead);
+  bullet.destroy();
+  alien.destroy();
   gameState.score += SCORING.ALIEN;
 });
 
 // Alien Bullet ↔ Player
 registerCollisionEffect(BIT_PLAYER, BIT_ENEMY_BULLET, (player, bullet) => {
-  if (player.get(Dead) || bullet.get(Dead)) return;
   damagePlayer(player, SHIELD_DAMAGE.BULLET);
-  bullet.add(Dead);
+  bullet.destroy();
 });
 
 // Alien Bullet ↔ Asteroid
 registerCollisionEffect(BIT_ASTEROID, BIT_ENEMY_BULLET, (asteroid, bullet) => {
-  if (asteroid.get(Dead) || bullet.get(Dead)) return;
   const acomp = asteroid.get(Asteroid);
   explode(getPos(asteroid).x, getPos(asteroid).y, acomp?.color ?? '#aaa');
-  asteroid.add(Dead);
-  bullet.add(Dead);
+  asteroid.destroy();
+  bullet.destroy();
 });
 
 // Alien ↔ Asteroid
 registerCollisionEffect(BIT_ASTEROID, BIT_ENEMY, (asteroid, alien) => {
-  if (asteroid.get(Dead) || alien.get(Dead)) return;
   const acomp = asteroid.get(Asteroid);
   explode(
     getPos(asteroid).x,
@@ -190,24 +184,22 @@ registerCollisionEffect(BIT_ASTEROID, BIT_ENEMY, (asteroid, alien) => {
     acomp?.color ?? '#ffaa00',
     20,
   );
-  alien.add(Dead);
-  asteroid.add(Dead);
+  alien.destroy();
+  asteroid.destroy();
   gameState.score += SCORING.ALIEN;
 });
 
 // Alien ↔ Player
 registerCollisionEffect(BIT_PLAYER, BIT_ENEMY, (player, alien) => {
-  if (player.get(Dead) || alien.get(Dead)) return;
   const { x, y } = getPos(player);
   damagePlayer(player, SHIELD_DAMAGE.ALIEN_BODY);
   explode(x, y, '#ffaa00', player.get(Shield) ? 20 : 5);
-  alien.add(Dead);
+  alien.destroy();
   gameState.score += SCORING.ALIEN;
 });
 
 // Boomerang ↔ Asteroid: destroy both
 registerCollisionEffect(BIT_BOOMERANG, BIT_ASTEROID, (boom, asteroid) => {
-  if (boom.get(Dead) || asteroid.get(Dead)) return;
   const acomp = asteroid.get(Asteroid)!;
   const { x, y } = getPos(asteroid);
   explode(x, y, acomp.color);
@@ -216,43 +208,40 @@ registerCollisionEffect(BIT_BOOMERANG, BIT_ASTEROID, (boom, asteroid) => {
     createAsteroid(x, y, nl);
     createAsteroid(x, y, nl);
   }
-  boom.add(Dead);
-  asteroid.add(Dead);
+  boom.destroy();
+  asteroid.destroy();
   gameState.score += SCORING.ASTEROID_BASE * acomp.level;
 });
 
 // Boomerang ↔ Alien: damage HP and destroy boomerang
 registerCollisionEffect(BIT_BOOMERANG, BIT_ENEMY, (boom, alien) => {
-  if (boom.get(Dead) || alien.get(Dead)) return;
   const health = alien.get(Health);
   if (health) {
     health.hp -= ENTITY_CONFIG.BOOMERANG.DAMAGE;
     health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
     if (health.hp > 0) {
-      boom.add(Dead);
+      boom.destroy();
       return;
     }
   }
   explode(getPos(alien).x, getPos(alien).y, '#ffaa00', 15);
-  boom.add(Dead);
-  alien.add(Dead);
+  boom.destroy();
+  alien.destroy();
   gameState.score += SCORING.ALIEN;
 });
 
 // Player ↔ Boomerang: only owner catches, and only after the boomerang has
 // armed (left the catch zone) so the launch frame doesn't self-catch.
 registerCollisionEffect(BIT_PLAYER, BIT_BOOMERANG, (player, boom) => {
-  if (player.get(Dead) || boom.get(Dead)) return;
   const b = boom.get(Boomerang);
   if (!b || b.owner !== player || !b.armed) return;
   const w = player.get(BoomerangWeapon);
   if (w) w.shots = Math.min(w.shots + 1, ENTITY_CONFIG.BOOMERANG.MAX_SHOTS);
-  boom.add(Dead);
+  boom.destroy();
 });
 
 // Player ↔ Asteroid
 registerCollisionEffect(BIT_PLAYER, BIT_ASTEROID, (player, asteroid) => {
-  if (player.get(Dead) || asteroid.get(Dead)) return;
   const acomp = asteroid.get(Asteroid)!;
   const { x: ax, y: ay } = getPos(asteroid);
   const { x: px, y: py } = getPos(player);
@@ -263,7 +252,7 @@ registerCollisionEffect(BIT_PLAYER, BIT_ASTEROID, (player, asteroid) => {
     acomp.color,
     5,
   );
-  asteroid.add(Dead);
+  asteroid.destroy();
   gameState.score += SCORING.ASTEROID_BASE * acomp.level;
 });
 
@@ -278,13 +267,13 @@ world
     const entities = [...colliderQuery.entities] as Entity[];
     for (let i = 0; i < entities.length; i++) {
       const a = entities[i]!;
-      if (a.get(Dead)) continue;
-      const colA = a.get(Collider)!;
+      const colA = a.get(Collider);
+      if (!colA) continue;
       const posA = a.get(Position)!;
       for (let j = i + 1; j < entities.length; j++) {
         const b = entities[j]!;
-        if (b.get(Dead)) continue;
-        const colB = b.get(Collider)!;
+        const colB = b.get(Collider);
+        if (!colB) continue;
         if (!(colA.mask & colB.category) || !(colB.mask & colA.category))
           continue;
         const posB = b.get(Position)!;
