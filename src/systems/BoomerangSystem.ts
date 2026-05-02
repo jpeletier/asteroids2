@@ -38,11 +38,6 @@ world
         }
       }
     }
-
-    for (const [t, n] of boom.hitCooldowns) {
-      if (n <= 1) boom.hitCooldowns.delete(t);
-      else boom.hitCooldowns.set(t, n - 1);
-    }
   });
 
 world

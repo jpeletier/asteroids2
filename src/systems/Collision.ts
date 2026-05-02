@@ -205,12 +205,9 @@ registerCollisionEffect(BIT_PLAYER, BIT_ENEMY, (player, alien) => {
   gameState.score += SCORING.ALIEN;
 });
 
-// Boomerang ↔ Asteroid: destroy asteroid, boomerang survives, per-target cooldown
+// Boomerang ↔ Asteroid: destroy both
 registerCollisionEffect(BIT_BOOMERANG, BIT_ASTEROID, (boom, asteroid) => {
   if (boom.get(Dead) || asteroid.get(Dead)) return;
-  const b = boom.get(Boomerang)!;
-  if (b.hitCooldowns.has(asteroid)) return;
-  b.hitCooldowns.set(asteroid, ENTITY_CONFIG.BOOMERANG.HIT_COOLDOWN);
   const acomp = asteroid.get(Asteroid)!;
   const { x, y } = getPos(asteroid);
   explode(x, y, acomp.color);
@@ -219,25 +216,27 @@ registerCollisionEffect(BIT_BOOMERANG, BIT_ASTEROID, (boom, asteroid) => {
     createAsteroid(x, y, nl);
     createAsteroid(x, y, nl);
   }
+  boom.add(Dead);
   asteroid.add(Dead);
   gameState.score += SCORING.ASTEROID_BASE * acomp.level;
 });
 
-// Boomerang ↔ Alien: damage HP, boomerang survives, per-target cooldown
+// Boomerang ↔ Alien: damage HP and destroy boomerang
 registerCollisionEffect(BIT_BOOMERANG, BIT_ENEMY, (boom, alien) => {
   if (boom.get(Dead) || alien.get(Dead)) return;
-  const b = boom.get(Boomerang)!;
-  if (b.hitCooldowns.has(alien)) return;
-  b.hitCooldowns.set(alien, ENTITY_CONFIG.BOOMERANG.HIT_COOLDOWN);
   const health = alien.get(Health);
-  if (!health) return;
-  health.hp -= ENTITY_CONFIG.BOOMERANG.DAMAGE;
-  health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
-  if (health.hp <= 0) {
-    explode(getPos(alien).x, getPos(alien).y, '#ffaa00', 15);
-    alien.add(Dead);
-    gameState.score += SCORING.ALIEN;
+  if (health) {
+    health.hp -= ENTITY_CONFIG.BOOMERANG.DAMAGE;
+    health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
+    if (health.hp > 0) {
+      boom.add(Dead);
+      return;
+    }
   }
+  explode(getPos(alien).x, getPos(alien).y, '#ffaa00', 15);
+  boom.add(Dead);
+  alien.add(Dead);
+  gameState.score += SCORING.ALIEN;
 });
 
 // Player ↔ Boomerang: only owner catches, and only after the boomerang has

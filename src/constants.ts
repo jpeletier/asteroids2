@@ -57,14 +57,13 @@ export const ENTITY_CONFIG = {
   },
   BOOMERANG: {
     SPEED: 19,
-    MAX_SPEED: 11,
-    PULL: 0.28,
+    MAX_SPEED: 13,
+    PULL: 0.3,
     LIFE: 600,
     SPIN: 0.28,
     RADIUS: 5,
-    HIT_COOLDOWN: 12,
     DAMAGE: 15,
-    MAX_SHOTS: 15,
+    MAX_SHOTS: 20,
     ARM_DISTANCE: 30,
   },
   SHIP: {

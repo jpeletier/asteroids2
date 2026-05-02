@@ -42,7 +42,7 @@ export function createBoomerang(
     })
     .set(Rotation, { angle })
     .set(AngularVelocity, { omega: cfg.SPIN })
-    .set(Boomerang, { owner, hitCooldowns: new Map(), armed: false })
+    .set(Boomerang, { owner, armed: false })
     .set(Collider, {
       radius: cfg.RADIUS,
       category: CAT_BOOMERANG,
