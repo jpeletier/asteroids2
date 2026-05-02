@@ -7,17 +7,8 @@ world
   .phase(updatePhase)
   .each([RandomClock], (_e, [clock]) => {
     if (gameState.state !== 'playing') return;
-    const now = Date.now();
-
-    if (clock.nextTick === 0) {
-      clock.nextTick =
-        now + clock.minWait + Math.random() * (clock.maxWait - clock.minWait);
-      return;
-    }
-
-    if (now >= clock.nextTick) {
+    if (Date.now() >= clock.nextTick) {
       clock.effectFunc();
-      clock.nextTick =
-        now + clock.minWait + Math.random() * (clock.maxWait - clock.minWait);
+      clock.schedule();
     }
   });

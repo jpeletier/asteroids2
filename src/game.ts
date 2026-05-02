@@ -4,7 +4,6 @@ import { createShip } from './factories/Ship';
 import { createAsteroid } from './factories/Asteroid';
 import { createAlien } from './factories/Alien';
 import { createPickup } from './factories/Pickup';
-import { createClock } from './factories/Clock';
 import { Position, RandomClock, Alien } from './components/index';
 import { GAME_CONFIG } from './constants';
 import type { Entity } from '@vworlds/vecs';
@@ -40,38 +39,12 @@ export function initGame(): void {
     shoot: 'Enter',
   });
 
-  createClock(
-    GAME_CONFIG.ALIEN_SPAWN_MIN_WAIT,
-    GAME_CONFIG.ALIEN_SPAWN_MAX_WAIT,
-    () => {
-      if (alienQuery.entities.size < GAME_CONFIG.ALIEN_CAP) createAlien();
-    },
-  );
-  createClock(
-    GAME_CONFIG.SHIELD_SPAWN_MIN_WAIT,
-    GAME_CONFIG.SHIELD_SPAWN_MAX_WAIT,
-    () => createPickup('shield'),
-  );
-  createClock(
-    GAME_CONFIG.LASER_SPAWN_MIN_WAIT,
-    GAME_CONFIG.LASER_SPAWN_MAX_WAIT,
-    () => createPickup('laser'),
-  );
-  createClock(
-    GAME_CONFIG.AURA_SPAWN_MIN_WAIT,
-    GAME_CONFIG.AURA_SPAWN_MAX_WAIT,
-    () => createPickup('aura'),
-  );
-  createClock(
-    GAME_CONFIG.ROCKET_SPAWN_MIN_WAIT,
-    GAME_CONFIG.ROCKET_SPAWN_MAX_WAIT,
-    () => createPickup('rocket'),
-  );
-  createClock(
-    GAME_CONFIG.HEALTH_SPAWN_MIN_WAIT,
-    GAME_CONFIG.HEALTH_SPAWN_MAX_WAIT,
-    () => createPickup('health'),
-  );
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.ALIEN_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.ALIEN_SPAWN_MAX_WAIT, effectFunc: () => { if (alienQuery.entities.size < GAME_CONFIG.ALIEN_CAP) createAlien(); } });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.SHIELD_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.SHIELD_SPAWN_MAX_WAIT, effectFunc: () => createPickup('shield') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.LASER_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.LASER_SPAWN_MAX_WAIT, effectFunc: () => createPickup('laser') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.AURA_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.AURA_SPAWN_MAX_WAIT, effectFunc: () => createPickup('aura') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.ROCKET_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.ROCKET_SPAWN_MAX_WAIT, effectFunc: () => createPickup('rocket') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.HEALTH_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.HEALTH_SPAWN_MAX_WAIT, effectFunc: () => createPickup('health') });
 
   spawnWave(1);
 }
