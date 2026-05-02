@@ -16,10 +16,19 @@ import {
   RocketWeapon,
   Shield,
   Health,
+  Decay,
 } from '../components/index';
-import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, SCORING } from '../constants';
+import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, GAME_CONFIG, SCORING } from '../constants';
 
 type PickupType = 'shield' | 'laser' | 'aura' | 'rocket' | 'health';
+
+const PICKUP_TTL_FRAMES: Record<PickupType, number> = {
+  shield: GAME_CONFIG.SHIELD_PICKUP_TTL_FRAMES,
+  laser: GAME_CONFIG.LASER_PICKUP_TTL_FRAMES,
+  aura: GAME_CONFIG.AURA_PICKUP_TTL_FRAMES,
+  rocket: GAME_CONFIG.ROCKET_PICKUP_TTL_FRAMES,
+  health: GAME_CONFIG.HEALTH_PICKUP_TTL_FRAMES,
+};
 
 const PICKUP_CONFIG: Record<PickupType, { color: string; label: string }> = {
   shield: { color: '#0f0', label: 'S' },
@@ -36,7 +45,6 @@ function makeEffectFunc(
     if (type === 'shield') {
       picker.set(Shield, { shieldTime: ENTITY_CONFIG.SHIP.SHIELD_DURATION });
       gameState.score += SCORING.SHIELD;
-      gameState.shieldPickupExists = false;
     } else if (type === 'laser') {
       picker.set(LaserWeapon, {
         shots: ENTITY_CONFIG.SHIP.LASER_SHOT_COUNT,
@@ -44,15 +52,12 @@ function makeEffectFunc(
         timer: 0,
       });
       gameState.score += SCORING.LASER;
-      gameState.laserPickupExists = false;
     } else if (type === 'aura') {
       picker.set(AuraWeapon, { shots: ENTITY_CONFIG.SHIP.AURA_SHOT_COUNT });
       gameState.score += SCORING.AURA;
-      gameState.auraPickupExists = false;
     } else if (type === 'rocket') {
       picker.set(RocketWeapon, { shots: ENTITY_CONFIG.ROCKET.SHOT_COUNT });
       gameState.score += SCORING.ROCKET;
-      gameState.rocketPickupExists = false;
     } else {
       const hp = source.get(HealthPickup)!;
       const health = picker.get(Health);
@@ -65,7 +70,6 @@ function makeEffectFunc(
       }
       gameState.score +=
         hp.amount <= 0.25 ? SCORING.HEALTH_SMALL : SCORING.HEALTH_LARGE;
-      gameState.healthPickupExists = false;
     }
   };
 }
@@ -87,6 +91,7 @@ export function createPickup(type: PickupType): void {
       vy: (Math.random() - 0.5) * ENTITY_CONFIG.POWERUP.SPEED_FACTOR,
     })
     .set(Pickup, { effectFunc: makeEffectFunc(type) })
+    .set(Decay, { life: 1, decay: 1 / PICKUP_TTL_FRAMES[type] })
     .set(Collider, {
       radius: ENTITY_CONFIG.POWERUP.RADIUS,
       category: CAT_PICKUP,

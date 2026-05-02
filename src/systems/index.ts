@@ -12,7 +12,7 @@ import './ShieldSystem';
 import './DecaySystem';
 import './HealthSystem';
 import './Collision';
-import './Spawn';
+import './RandomClockSystem';
 import './Wave';
 import './Cleanup';
 
