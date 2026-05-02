@@ -2,12 +2,18 @@ import { world, gameState, canvasSize, msgEl } from './world';
 import './systems/index';
 import { createShip } from './factories/Ship';
 import { createAsteroid } from './factories/Asteroid';
-import { Position } from './components/index';
+import { createAlien } from './factories/Alien';
+import { createPickup } from './factories/Pickup';
+import { Position, RandomClock, Alien } from './components/index';
+import { GAME_CONFIG } from './constants';
 import type { Entity } from '@vworlds/vecs';
+
+const alienQuery = world.query('AlienClockCap').requires(Alien);
 
 function destroyAllGameEntities(): void {
   const toDestroy: Entity[] = [];
   world.filter([Position]).forEach((e) => toDestroy.push(e));
+  world.filter([RandomClock]).forEach((e) => toDestroy.push(e));
   for (const e of toDestroy) e.destroy();
 }
 
@@ -17,17 +23,6 @@ export function initGame(): void {
   gameState.state = 'playing';
   gameState.score = 0;
   gameState.wave = 1;
-  gameState.lastAlienSpawnTime = Date.now();
-  gameState.lastShieldSpawnTime = Date.now();
-  gameState.lastLaserSpawnTime = Date.now();
-  gameState.lastAuraSpawnTime = Date.now();
-  gameState.shieldPickupExists = false;
-  gameState.laserPickupExists = false;
-  gameState.auraPickupExists = false;
-  gameState.rocketPickupExists = false;
-  gameState.lastRocketSpawnTime = Date.now();
-  gameState.healthPickupExists = false;
-  gameState.lastHealthSpawnTime = Date.now();
 
   if (msgEl) msgEl.innerText = '';
 
@@ -43,6 +38,13 @@ export function initGame(): void {
     rotateRight: 'ArrowRight',
     shoot: 'Enter',
   });
+
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.ALIEN_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.ALIEN_SPAWN_MAX_WAIT, effectFunc: () => { if (alienQuery.entities.size < GAME_CONFIG.ALIEN_CAP) createAlien(); } });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.SHIELD_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.SHIELD_SPAWN_MAX_WAIT, effectFunc: () => createPickup('shield') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.LASER_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.LASER_SPAWN_MAX_WAIT, effectFunc: () => createPickup('laser') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.AURA_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.AURA_SPAWN_MAX_WAIT, effectFunc: () => createPickup('aura') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.ROCKET_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.ROCKET_SPAWN_MAX_WAIT, effectFunc: () => createPickup('rocket') });
+  world.entity().set(RandomClock, { minWait: GAME_CONFIG.HEALTH_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.HEALTH_SPAWN_MAX_WAIT, effectFunc: () => createPickup('health') });
 
   spawnWave(1);
 }

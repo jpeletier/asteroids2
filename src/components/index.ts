@@ -34,3 +34,4 @@ export { CanvasSize } from './CanvasSize';
 export { GameStateComp } from './GameStateComp';
 export { RenderContext } from './RenderContext';
 export { Keys } from './Keys';
+export { RandomClock } from './RandomClock';

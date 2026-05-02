@@ -36,6 +36,7 @@ import {
   GameStateComp,
   RenderContext,
   Keys,
+  RandomClock,
 } from './components/index';
 import { initStars } from './utils';
 
@@ -78,6 +79,7 @@ world.registerComponent(CanvasSize);
 world.registerComponent(GameStateComp);
 world.registerComponent(RenderContext);
 world.registerComponent(Keys);
+world.registerComponent(RandomClock);
 
 // Weapons are mutually exclusive
 world.setExclusiveComponents(
