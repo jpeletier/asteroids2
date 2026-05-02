@@ -16,6 +16,7 @@ import {
   CAT_PLAYER,
   CAT_ASTEROID,
   CAT_PLAYER_BULLET,
+  CAT_BOOMERANG,
   ENTITY_CONFIG,
 } from '../constants';
 
@@ -41,7 +42,7 @@ export function createAlien(): void {
     .set(Collider, {
       radius: ENTITY_CONFIG.ALIEN.RADIUS,
       category: CAT_ENEMY,
-      mask: CAT_PLAYER | CAT_ASTEROID | CAT_PLAYER_BULLET,
+      mask: CAT_PLAYER | CAT_ASTEROID | CAT_PLAYER_BULLET | CAT_BOOMERANG,
     })
     .set(Drawable, { zIndex: 40 })
     .add(Wraps)

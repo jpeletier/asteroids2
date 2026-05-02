@@ -7,7 +7,7 @@ A fast-paced, two-player cooperative Asteroids-style game.
 - **Local Co-op**: Play with two players on one keyboard.
 - **Waves**: Increasing difficulty with every wave.
 - **Boss Rush**: Special boss battles every few waves.
-- **Powerups**: Collect shields to protect yourself from alien and asteroid collisions.
+- **Powerups**: Collect shields, weapons (Laser, Aura, Rocket, Boomerang), and health pickups. The Boomerang spins through enemies, curves back, and refunds ammo if you catch it.
 - **Aliens**: Watch out for alien ships that hunt you down!
 
 ## Controls

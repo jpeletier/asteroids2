@@ -3,6 +3,7 @@ import {
   Position,
   Velocity,
   Rotation,
+  AngularVelocity,
   Friction,
   Thrust,
   Drawable,
@@ -19,6 +20,8 @@ import {
   LaserWeapon,
   AuraWeapon,
   RocketWeapon,
+  BoomerangWeapon,
+  Boomerang,
   DefaultWeapon,
   Pickup,
   HealthPickup,
@@ -46,6 +49,7 @@ export const world = new World();
 world.registerComponent(Position);
 world.registerComponent(Velocity);
 world.registerComponent(Rotation);
+world.registerComponent(AngularVelocity);
 world.registerComponent(Friction);
 world.registerComponent(Thrust);
 world.registerComponent(Drawable);
@@ -62,6 +66,8 @@ world.registerComponent(Shield);
 world.registerComponent(LaserWeapon);
 world.registerComponent(AuraWeapon);
 world.registerComponent(RocketWeapon);
+world.registerComponent(BoomerangWeapon);
+world.registerComponent(Boomerang);
 world.registerComponent(DefaultWeapon);
 world.registerComponent(Pickup);
 world.registerComponent(HealthPickup);
@@ -86,6 +92,7 @@ world.setExclusiveComponents(
   LaserWeapon,
   AuraWeapon,
   RocketWeapon,
+  BoomerangWeapon,
   DefaultWeapon,
 );
 

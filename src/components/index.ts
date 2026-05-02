@@ -1,6 +1,7 @@
 export { Position } from './Position';
 export { Velocity } from './Velocity';
 export { Rotation } from './Rotation';
+export { AngularVelocity } from './AngularVelocity';
 export { Friction } from './Friction';
 export { Thrust } from './Thrust';
 export { Drawable } from './Drawable';
@@ -17,6 +18,8 @@ export { Shield } from './Shield';
 export { LaserWeapon } from './LaserWeapon';
 export { AuraWeapon } from './AuraWeapon';
 export { RocketWeapon } from './RocketWeapon';
+export { BoomerangWeapon } from './BoomerangWeapon';
+export { Boomerang } from './Boomerang';
 export { DefaultWeapon } from './DefaultWeapon';
 export { Pickup } from './Pickup';
 export { HealthPickup } from './HealthPickup';

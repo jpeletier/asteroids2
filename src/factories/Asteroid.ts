@@ -15,6 +15,7 @@ import {
   CAT_PLAYER_BULLET,
   CAT_ENEMY_BULLET,
   CAT_ENEMY,
+  CAT_BOOMERANG,
   ENTITY_CONFIG,
 } from '../constants';
 import type { Point } from '../types';
@@ -46,7 +47,12 @@ export function createAsteroid(x: number, y: number, level: 1 | 2 | 3): void {
     .set(Collider, {
       radius,
       category: CAT_ASTEROID,
-      mask: CAT_PLAYER | CAT_PLAYER_BULLET | CAT_ENEMY_BULLET | CAT_ENEMY,
+      mask:
+        CAT_PLAYER |
+        CAT_PLAYER_BULLET |
+        CAT_ENEMY_BULLET |
+        CAT_ENEMY |
+        CAT_BOOMERANG,
     })
     .set(Drawable, { zIndex: 30 })
     .add(Wraps)

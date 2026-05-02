@@ -21,6 +21,7 @@ import {
   CAT_ENEMY_BULLET,
   CAT_ENEMY,
   CAT_PICKUP,
+  CAT_BOOMERANG,
   ENTITY_CONFIG,
 } from '../constants';
 import type { Controls } from '../types';
@@ -58,7 +59,12 @@ export function createShip(
     .set(Collider, {
       radius: ENTITY_CONFIG.SHIP.RADIUS,
       category: CAT_PLAYER,
-      mask: CAT_ASTEROID | CAT_ENEMY_BULLET | CAT_ENEMY | CAT_PICKUP,
+      mask:
+        CAT_ASTEROID |
+        CAT_ENEMY_BULLET |
+        CAT_ENEMY |
+        CAT_PICKUP |
+        CAT_BOOMERANG,
     })
     .set(Drawable, { zIndex: 60 })
     .add(Wraps)

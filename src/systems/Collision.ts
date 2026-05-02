@@ -8,6 +8,8 @@ import {
   Pickup,
   Position,
   Rocket,
+  Boomerang,
+  BoomerangWeapon,
 } from '../components/index';
 import { SHIELD_DAMAGE, SCORING, ENTITY_CONFIG } from '../constants';
 import { explode } from '../factories/Particle';
@@ -78,6 +80,7 @@ export const BIT_PLAYER_BULLET = 2;
 export const BIT_ENEMY_BULLET = 3;
 export const BIT_ENEMY = 4;
 export const BIT_PICKUP = 5;
+export const BIT_BOOMERANG = 6;
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 let _initGame: (() => void) | null = null;
@@ -200,6 +203,52 @@ registerCollisionEffect(BIT_PLAYER, BIT_ENEMY, (player, alien) => {
   explode(x, y, '#ffaa00', player.get(Shield) ? 20 : 5);
   alien.add(Dead);
   gameState.score += SCORING.ALIEN;
+});
+
+// Boomerang ↔ Asteroid: destroy asteroid, boomerang survives, per-target cooldown
+registerCollisionEffect(BIT_BOOMERANG, BIT_ASTEROID, (boom, asteroid) => {
+  if (boom.get(Dead) || asteroid.get(Dead)) return;
+  const b = boom.get(Boomerang)!;
+  if (b.hitCooldowns.has(asteroid)) return;
+  b.hitCooldowns.set(asteroid, ENTITY_CONFIG.BOOMERANG.HIT_COOLDOWN);
+  const acomp = asteroid.get(Asteroid)!;
+  const { x, y } = getPos(asteroid);
+  explode(x, y, acomp.color);
+  if (acomp.level > 1) {
+    const nl = (acomp.level - 1) as 1 | 2;
+    createAsteroid(x, y, nl);
+    createAsteroid(x, y, nl);
+  }
+  asteroid.add(Dead);
+  gameState.score += SCORING.ASTEROID_BASE * acomp.level;
+});
+
+// Boomerang ↔ Alien: damage HP, boomerang survives, per-target cooldown
+registerCollisionEffect(BIT_BOOMERANG, BIT_ENEMY, (boom, alien) => {
+  if (boom.get(Dead) || alien.get(Dead)) return;
+  const b = boom.get(Boomerang)!;
+  if (b.hitCooldowns.has(alien)) return;
+  b.hitCooldowns.set(alien, ENTITY_CONFIG.BOOMERANG.HIT_COOLDOWN);
+  const health = alien.get(Health);
+  if (!health) return;
+  health.hp -= ENTITY_CONFIG.BOOMERANG.DAMAGE;
+  health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
+  if (health.hp <= 0) {
+    explode(getPos(alien).x, getPos(alien).y, '#ffaa00', 15);
+    alien.add(Dead);
+    gameState.score += SCORING.ALIEN;
+  }
+});
+
+// Player ↔ Boomerang: only owner catches, and only after the boomerang has
+// armed (left the catch zone) so the launch frame doesn't self-catch.
+registerCollisionEffect(BIT_PLAYER, BIT_BOOMERANG, (player, boom) => {
+  if (player.get(Dead) || boom.get(Dead)) return;
+  const b = boom.get(Boomerang);
+  if (!b || b.owner !== player || !b.armed) return;
+  const w = player.get(BoomerangWeapon);
+  if (w) w.shots = Math.min(w.shots + 1, ENTITY_CONFIG.BOOMERANG.MAX_SHOTS);
+  boom.add(Dead);
 });
 
 // Player ↔ Asteroid

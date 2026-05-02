@@ -14,19 +14,33 @@ import {
   LaserWeapon,
   AuraWeapon,
   RocketWeapon,
+  BoomerangWeapon,
   Shield,
   Health,
   Decay,
 } from '../components/index';
-import { CAT_PICKUP, CAT_PLAYER, ENTITY_CONFIG, GAME_CONFIG, SCORING } from '../constants';
+import {
+  CAT_PICKUP,
+  CAT_PLAYER,
+  ENTITY_CONFIG,
+  GAME_CONFIG,
+  SCORING,
+} from '../constants';
 
-type PickupType = 'shield' | 'laser' | 'aura' | 'rocket' | 'health';
+type PickupType =
+  | 'shield'
+  | 'laser'
+  | 'aura'
+  | 'rocket'
+  | 'boomerang'
+  | 'health';
 
 const PICKUP_TTL_FRAMES: Record<PickupType, number> = {
   shield: GAME_CONFIG.SHIELD_PICKUP_TTL_FRAMES,
   laser: GAME_CONFIG.LASER_PICKUP_TTL_FRAMES,
   aura: GAME_CONFIG.AURA_PICKUP_TTL_FRAMES,
   rocket: GAME_CONFIG.ROCKET_PICKUP_TTL_FRAMES,
+  boomerang: GAME_CONFIG.BOOMERANG_PICKUP_TTL_FRAMES,
   health: GAME_CONFIG.HEALTH_PICKUP_TTL_FRAMES,
 };
 
@@ -35,6 +49,7 @@ const PICKUP_CONFIG: Record<PickupType, { color: string; label: string }> = {
   laser: { color: '#f00', label: 'L' },
   aura: { color: '#3af', label: 'A' },
   rocket: { color: '#ff6600', label: 'R' },
+  boomerang: { color: '#006400', label: 'B' },
   health: { color: '#fff', label: '' }, // label set dynamically per variant
 };
 
@@ -58,6 +73,11 @@ function makeEffectFunc(
     } else if (type === 'rocket') {
       picker.set(RocketWeapon, { shots: ENTITY_CONFIG.ROCKET.SHOT_COUNT });
       gameState.score += SCORING.ROCKET;
+    } else if (type === 'boomerang') {
+      picker.set(BoomerangWeapon, {
+        shots: ENTITY_CONFIG.BOOMERANG.MAX_SHOTS,
+      });
+      gameState.score += SCORING.BOOMERANG;
     } else {
       const hp = source.get(HealthPickup)!;
       const health = picker.get(Health);

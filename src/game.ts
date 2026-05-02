@@ -39,12 +39,55 @@ export function initGame(): void {
     shoot: 'Enter',
   });
 
-  world.entity().set(RandomClock, { minWait: GAME_CONFIG.ALIEN_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.ALIEN_SPAWN_MAX_WAIT, effectFunc: () => { if (alienQuery.entities.size < GAME_CONFIG.ALIEN_CAP) createAlien(); } });
-  world.entity().set(RandomClock, { minWait: GAME_CONFIG.SHIELD_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.SHIELD_SPAWN_MAX_WAIT, effectFunc: () => createPickup('shield') });
-  world.entity().set(RandomClock, { minWait: GAME_CONFIG.LASER_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.LASER_SPAWN_MAX_WAIT, effectFunc: () => createPickup('laser') });
-  world.entity().set(RandomClock, { minWait: GAME_CONFIG.AURA_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.AURA_SPAWN_MAX_WAIT, effectFunc: () => createPickup('aura') });
-  world.entity().set(RandomClock, { minWait: GAME_CONFIG.ROCKET_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.ROCKET_SPAWN_MAX_WAIT, effectFunc: () => createPickup('rocket') });
-  world.entity().set(RandomClock, { minWait: GAME_CONFIG.HEALTH_SPAWN_MIN_WAIT, maxWait: GAME_CONFIG.HEALTH_SPAWN_MAX_WAIT, effectFunc: () => createPickup('health') });
+  world.entity().set(RandomClock, {
+    minWait: GAME_CONFIG.ALIEN_SPAWN_MIN_WAIT,
+    maxWait: GAME_CONFIG.ALIEN_SPAWN_MAX_WAIT,
+    effectFunc: () => {
+      if (alienQuery.entities.size < GAME_CONFIG.ALIEN_CAP) createAlien();
+    },
+  });
+  world
+    .entity()
+    .set(RandomClock, {
+      minWait: GAME_CONFIG.SHIELD_SPAWN_MIN_WAIT,
+      maxWait: GAME_CONFIG.SHIELD_SPAWN_MAX_WAIT,
+      effectFunc: () => createPickup('shield'),
+    });
+  world
+    .entity()
+    .set(RandomClock, {
+      minWait: GAME_CONFIG.LASER_SPAWN_MIN_WAIT,
+      maxWait: GAME_CONFIG.LASER_SPAWN_MAX_WAIT,
+      effectFunc: () => createPickup('laser'),
+    });
+  world
+    .entity()
+    .set(RandomClock, {
+      minWait: GAME_CONFIG.AURA_SPAWN_MIN_WAIT,
+      maxWait: GAME_CONFIG.AURA_SPAWN_MAX_WAIT,
+      effectFunc: () => createPickup('aura'),
+    });
+  world
+    .entity()
+    .set(RandomClock, {
+      minWait: GAME_CONFIG.ROCKET_SPAWN_MIN_WAIT,
+      maxWait: GAME_CONFIG.ROCKET_SPAWN_MAX_WAIT,
+      effectFunc: () => createPickup('rocket'),
+    });
+  world
+    .entity()
+    .set(RandomClock, {
+      minWait: GAME_CONFIG.BOOMERANG_SPAWN_MIN_WAIT,
+      maxWait: GAME_CONFIG.BOOMERANG_SPAWN_MAX_WAIT,
+      effectFunc: () => createPickup('boomerang'),
+    });
+  world
+    .entity()
+    .set(RandomClock, {
+      minWait: GAME_CONFIG.HEALTH_SPAWN_MIN_WAIT,
+      maxWait: GAME_CONFIG.HEALTH_SPAWN_MAX_WAIT,
+      effectFunc: () => createPickup('health'),
+    });
 
   spawnWave(1);
 }

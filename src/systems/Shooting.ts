@@ -6,11 +6,13 @@ import {
   LaserWeapon,
   AuraWeapon,
   RocketWeapon,
+  BoomerangWeapon,
   DefaultWeapon,
   StrokeStyle,
 } from '../components/index';
 import { createBullet } from '../factories/Bullet';
 import { createRocket } from '../factories/Rocket';
+import { createBoomerang } from '../factories/Boomerang';
 import {
   CAT_PLAYER_BULLET,
   CAT_ASTEROID,
@@ -29,6 +31,7 @@ world
     const aura = e.get(AuraWeapon);
     const laser = e.get(LaserWeapon);
     const rocketWeapon = e.get(RocketWeapon);
+    const boomerangWeapon = e.get(BoomerangWeapon);
 
     if (aura && aura.shots > 0) {
       for (let i = 0; i < 8; i++) {
@@ -60,6 +63,10 @@ world
         e.remove(RocketWeapon);
         e.add(DefaultWeapon);
       }
+      input.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
+    } else if (boomerangWeapon && boomerangWeapon.shots > 0) {
+      createBoomerang(pos.x, pos.y, rot.angle, e);
+      boomerangWeapon.shots--;
       input.shootCooldown = ENTITY_CONFIG.SHIP.SHOOT_COOLDOWN;
     } else if (e.get(DefaultWeapon)) {
       createBullet(
