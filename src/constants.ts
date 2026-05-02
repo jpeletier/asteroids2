@@ -17,6 +17,7 @@ export const ENTITY_CONFIG = {
   BULLET: {
     SPEED: 7,
     LIFE: 100,
+    DAMAGE: 10,
   },
   ASTEROID: {
     SPEED_FACTOR: 4,
@@ -32,6 +33,7 @@ export const ENTITY_CONFIG = {
     SHOOT_COOLDOWN_RANGE: 40,
     TARGET_DIST_MAX: 400,
     ASTEROID_AVOID_DIST: 60,
+    MAX_HP: 20,
   },
   ROCKET: {
     SPEED: 5,
@@ -40,6 +42,7 @@ export const ENTITY_CONFIG = {
     HOME_RANGE: 250,
     TURN_RATE: 0.08,
     SHOT_COUNT: 5,
+    DAMAGE: 20,
   },
   SHIP: {
     RADIUS: 12,

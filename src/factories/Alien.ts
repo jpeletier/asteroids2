@@ -6,6 +6,7 @@ import {
   Alien,
   Collider,
   Drawable,
+  Health,
   Shape,
   StrokeStyle,
   Wraps,
@@ -32,6 +33,11 @@ export function createAlien(): void {
     })
     .set(Rotation, { angle: Math.random() * Math.PI * 2 })
     .set(Alien, { shootCooldown: ENTITY_CONFIG.ALIEN.SHOOT_COOLDOWN_BASE })
+    .set(Health, {
+      hp: ENTITY_CONFIG.ALIEN.MAX_HP,
+      maxHp: ENTITY_CONFIG.ALIEN.MAX_HP,
+      healthBarTimer: 0,
+    })
     .set(Collider, {
       radius: ENTITY_CONFIG.ALIEN.RADIUS,
       category: CAT_ENEMY,

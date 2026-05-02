@@ -7,8 +7,9 @@ import {
   Asteroid,
   Pickup,
   Position,
+  Rocket,
 } from '../components/index';
-import { SHIELD_DAMAGE, SCORING } from '../constants';
+import { SHIELD_DAMAGE, SCORING, ENTITY_CONFIG } from '../constants';
 import { explode } from '../factories/Particle';
 import { createAsteroid } from '../factories/Asteroid';
 import type { Entity } from '@vworlds/vecs';
@@ -142,6 +143,18 @@ registerCollisionEffect(BIT_PLAYER_BULLET, BIT_ASTEROID, (bullet, asteroid) => {
 // Player Bullet ↔ Alien
 registerCollisionEffect(BIT_PLAYER_BULLET, BIT_ENEMY, (bullet, alien) => {
   if (bullet.get(Dead) || alien.get(Dead)) return;
+  const health = alien.get(Health);
+  if (health) {
+    const damage = bullet.get(Rocket)
+      ? ENTITY_CONFIG.ROCKET.DAMAGE
+      : ENTITY_CONFIG.BULLET.DAMAGE;
+    health.hp -= damage;
+    health.healthBarTimer = ENTITY_CONFIG.SHIP.HEALTH_BAR_TIMER;
+    if (health.hp > 0) {
+      bullet.add(Dead);
+      return;
+    }
+  }
   explode(getPos(alien).x, getPos(alien).y, '#ffaa00', 15);
   bullet.add(Dead);
   alien.add(Dead);
