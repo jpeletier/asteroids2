@@ -54,12 +54,12 @@ export function createBoomerang(
     .set(FillStyle, { style: '#006400' })
     .set(Shape, {
       points: [
-        { x: 5, y: -1 },
-        { x: 1, y: -5 },
-        { x: -2, y: -2 },
-        { x: -2, y: 2 },
-        { x: 1, y: 5 },
-        { x: 5, y: 1 },
+        { x: 0, y: 0 },
+        { x: 2, y: 5 },
+        { x: 5, y: 5 },
+        { x: 3, y: 0 },
+        { x: 5, y: -5 },
+        { x: 2, y: -5 },
       ],
     });
   owner.get(BoomerangWeapon)?.inFlight.add(entity);

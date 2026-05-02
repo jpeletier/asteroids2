@@ -61,7 +61,7 @@ export const ENTITY_CONFIG = {
     PULL: 0.3,
     LIFE: 600,
     SPIN: 0.28,
-    RADIUS: 5,
+    RADIUS: 7,
     DAMAGE: 15,
     MAX_SHOTS: 20,
     ARM_DISTANCE: 30,
