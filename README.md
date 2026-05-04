@@ -30,3 +30,12 @@ npm run dev        # start Vite dev server (http://localhost:5173)
 npm run build      # typecheck + production bundle → dist/
 npm run test       # run Vitest smoke tests
 ```
+
+## GitHub Pages previews
+
+Pushes and same-repository PRs publish the built game to the `gh-pages` branch.
+
+- Branch preview: `https://<owner>.github.io/<repo>/<branch>/`
+- Pull request preview: `https://<owner>.github.io/<repo>/pr-<number>/`
+
+Enable GitHub Pages in the repository settings with source branch `gh-pages` and folder `/`.
