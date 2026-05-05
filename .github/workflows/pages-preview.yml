@@ -43,6 +43,9 @@ jobs:
           echo "folder=$folder" >> "$GITHUB_OUTPUT"
           echo "url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/$folder/" >> "$GITHUB_OUTPUT"
 
+      - name: Add .nojekyll
+        run: touch dist/.nojekyll
+
       - name: Deploy to GitHub Pages branch
         uses: JamesIves/github-pages-deploy-action@v4
         with:
