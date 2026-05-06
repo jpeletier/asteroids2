@@ -291,7 +291,7 @@ export class GameEngine {
           }
         }
       } else if (b.ownerType === 'alien') {
-        this.entities.players.forEach((p) => {
+        for (const p of this.entities.players) {
           if (Math.hypot(b.x - p.x, b.y - p.y) < p.radius) {
             if (p.shieldTime > 0) {
               p.shieldTime = Math.max(0, p.shieldTime - 5 * 60);
@@ -308,7 +308,7 @@ export class GameEngine {
             }
             return false;
           }
-        });
+        }
       }
       return true;
     });
