@@ -7,6 +7,7 @@ const alienQuery = world.query('WaveAliens').requires(Alien);
 
 world
   .system('Wave')
+  .interval(0.25)
   .phase(updatePhase)
   .run(() => {
     if (gameState.state !== 'playing') return;

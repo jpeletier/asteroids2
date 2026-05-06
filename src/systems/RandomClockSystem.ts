@@ -3,6 +3,7 @@ import { RandomClock } from '../components/index';
 
 world
   .system('RandomClockSystem')
+  .interval(0.5)
   .requires(RandomClock)
   .phase(updatePhase)
   .each([RandomClock], (_e, [clock]) => {
