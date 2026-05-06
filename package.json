@@ -35,6 +35,6 @@
     ]
   },
   "dependencies": {
-    "@vworlds/vecs": "^1.0.11"
+    "@vworlds/vecs": "^1.0.12"
   }
 }
