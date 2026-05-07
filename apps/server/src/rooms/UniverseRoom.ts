@@ -134,11 +134,11 @@ export class UniverseRoom extends Room {
       .system('ReplicateNetworkedLifecycle')
       .phase(this.replicationPhase)
       .requires(Networked)
-      .enter([Networked], (_entity, [networked]) => {
-        this.markEntitySpawned(networked.id);
+      .enter((entity) => {
+        this.markEntitySpawned(entity.eid);
       })
-      .exit([Networked], (_entity, [networked]) => {
-        this.markEntityRemoved(networked.id);
+      .exit((entity) => {
+        this.markEntityRemoved(entity.eid);
       });
 
     for (const ComponentClass of SERIALIZABLE_COMPONENTS) {
@@ -155,28 +155,26 @@ export class UniverseRoom extends Room {
       .system(`Replicate${ComponentClass.name}`)
       .phase(this.replicationPhase)
       .requires(Networked, ComponentClass)
-      .update(ComponentClass, [Networked], (component, [networked]) => {
-        if (!networked) return;
+      .update(ComponentClass, (component) => {
         const serializable = component as Component & ISerializable;
         this.markComponentPatch(
-          networked.id,
+          component.entity.eid,
           componentType,
           serializable.serialize(),
         );
       })
-      .exit([Networked, ComponentClass], (_entity, [networked]) => {
-        this.markComponentRemoved(networked.id, componentType);
+      .exit((entity) => {
+        this.markComponentRemoved(entity.eid, componentType);
       });
   }
 
   private createDebugEntities(): void {
-    this.createDebugCircle(1, 260, 220, 90, 0.8, 0, '#00ffcc', 24);
-    this.createDebugCircle(2, 520, 320, 70, -1.1, 1.5, '#ff00ff', 18);
-    this.createDebugCircle(3, 780, 240, 110, 0.55, 3, '#ffaa00', 32);
+    this.createDebugCircle(260, 220, 90, 0.8, 0, '#00ffcc', 24);
+    this.createDebugCircle(520, 320, 70, -1.1, 1.5, '#ff00ff', 18);
+    this.createDebugCircle(780, 240, 110, 0.55, 3, '#ffaa00', 32);
   }
 
   private createDebugCircle(
-    id: number,
     centerX: number,
     centerY: number,
     orbitRadius: number,
@@ -190,7 +188,7 @@ export class UniverseRoom extends Room {
 
     this.world
       .entity()
-      .set(Networked, { id })
+      .add(Networked)
       .set(Position, { x: centerX + orbitRadius, y: centerY })
       .set(DebugMotion, { centerX, centerY, orbitRadius, angularSpeed, phase })
       .set(Drawable, { zIndex: 10 })
@@ -209,11 +207,8 @@ export class UniverseRoom extends Room {
     const entities: EcsSnapshotMessage['entities'] = [];
 
     this.world.filter([Networked]).forEach((entity) => {
-      const networked = entity.get(Networked);
-      if (!networked) return;
-
       entities.push({
-        id: networked.id,
+        id: entity.eid,
         components: this.serializeEntity(entity),
       });
     });
