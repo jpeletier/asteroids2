@@ -1,20 +1,11 @@
-import { World } from '@vworlds/vecs';
-import { CLIENT_ENTITY_ID_START } from '@spacerocks/common';
+import { CLIENT_ENTITY_ID_START, createWorld } from '@spacerocks/common';
 import {
-  Position,
   Velocity,
-  Rotation,
   AngularVelocity,
   Friction,
   Thrust,
-  Drawable,
-  Shape,
-  Arc,
-  FillStyle,
-  StrokeStyle,
   Label,
   Alpha,
-  FilledRect,
   Collider,
   Health,
   Shield,
@@ -43,24 +34,15 @@ import {
 } from './components/index';
 import { initStars } from './utils';
 
-export const world = new World();
-world.setEntityIdRange(CLIENT_ENTITY_ID_START);
+export const world = createWorld({ entityIdStart: CLIENT_ENTITY_ID_START });
 
 // ── Register all components ───────────────────────────────────────────────
-world.registerComponent(Position);
 world.registerComponent(Velocity);
-world.registerComponent(Rotation);
 world.registerComponent(AngularVelocity);
 world.registerComponent(Friction);
 world.registerComponent(Thrust);
-world.registerComponent(Drawable);
-world.registerComponent(Shape);
-world.registerComponent(Arc);
-world.registerComponent(FillStyle);
-world.registerComponent(StrokeStyle);
 world.registerComponent(Label);
 world.registerComponent(Alpha);
-world.registerComponent(FilledRect);
 world.registerComponent(Collider);
 world.registerComponent(Health);
 world.registerComponent(Shield);

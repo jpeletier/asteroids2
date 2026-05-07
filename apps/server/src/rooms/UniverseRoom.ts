@@ -1,22 +1,22 @@
 import { Room, type Client } from 'colyseus';
-import { Component, World, type Entity } from '@vworlds/vecs';
+import { Component, type Entity } from '@vworlds/vecs';
 import {
   Arc,
   Drawable,
   ECS_DELTA_MESSAGE,
   ECS_SNAPSHOT_MESSAGE,
-  FillStyle,
-  FilledRect,
-  NetworkComponentId,
   Networked,
   Position,
-  Rotation,
-  Shape,
+  SERIALIZABLE_COMPONENTS,
   StrokeStyle,
+  createWorld,
   type ComponentSnapshot,
+  type ComponentType,
   type EcsDeltaMessage,
   type EcsSnapshotMessage,
+  type ISerializable,
   type NetworkEntityId,
+  type SerializableComponentClass,
 } from '@spacerocks/common';
 import { logger } from '../logger';
 
@@ -27,85 +27,6 @@ class DebugMotion extends Component {
   angularSpeed = 1;
   phase = 0;
 }
-
-type ReplicatedComponentDef<T extends Component> = {
-  id: NetworkComponentId;
-  name: string;
-  component: typeof Component;
-  serialize: (value: T) => Record<string, unknown>;
-};
-
-function replicatedComponent<T extends Component>(
-  def: ReplicatedComponentDef<T>,
-): ReplicatedComponentDef<Component> {
-  return {
-    id: def.id,
-    name: def.name,
-    component: def.component,
-    serialize: (value) => def.serialize(value as T),
-  };
-}
-
-const networkComponentDefs = [
-  replicatedComponent({
-    id: NetworkComponentId.Position,
-    name: 'Position',
-    component: Position,
-    serialize: (value: Position) => ({ x: value.x, y: value.y }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.Rotation,
-    name: 'Rotation',
-    component: Rotation,
-    serialize: (value: Rotation) => ({ angle: value.angle }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.Drawable,
-    name: 'Drawable',
-    component: Drawable,
-    serialize: (value: Drawable) => ({ zIndex: value.zIndex }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.Arc,
-    name: 'Arc',
-    component: Arc,
-    serialize: (value: Arc) => ({
-      radius: value.radius,
-      startAngle: value.startAngle,
-      endAngle: value.endAngle,
-    }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.Shape,
-    name: 'Shape',
-    component: Shape,
-    serialize: (value: Shape) => ({ points: value.points }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.StrokeStyle,
-    name: 'StrokeStyle',
-    component: StrokeStyle,
-    serialize: (value: StrokeStyle) => ({
-      style: value.style,
-      lineWidth: value.lineWidth,
-    }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.FillStyle,
-    name: 'FillStyle',
-    component: FillStyle,
-    serialize: (value: FillStyle) => ({ style: value.style }),
-  }),
-  replicatedComponent({
-    id: NetworkComponentId.FilledRect,
-    name: 'FilledRect',
-    component: FilledRect,
-    serialize: (value: FilledRect) => ({
-      width: value.width,
-      height: value.height,
-    }),
-  }),
-];
 
 const DEBUG_COLORS = [
   '#00ffcc',
@@ -118,11 +39,11 @@ const DEBUG_COLORS = [
 
 type PendingPatches = Map<
   NetworkEntityId,
-  Map<NetworkComponentId, ComponentSnapshot>
+  Map<ComponentType, ComponentSnapshot>
 >;
 
 export class UniverseRoom extends Room {
-  private readonly world = new World();
+  private readonly world = createWorld();
   private readonly simulationPhase = this.world.addPhase('simulation');
   private readonly replicationPhase = this.world.addPhase('replication');
   private readonly sendPhase = this.world.addPhase('send');
@@ -131,7 +52,7 @@ export class UniverseRoom extends Room {
   private readonly patches: PendingPatches = new Map();
   private readonly componentRemoved = new Map<
     NetworkEntityId,
-    Set<NetworkComponentId>
+    Set<ComponentType>
   >();
   private tick = 0;
 
@@ -167,12 +88,7 @@ export class UniverseRoom extends Room {
   }
 
   private registerComponents(): void {
-    this.world.registerComponent(Networked, 1000);
-    this.world.registerComponent(DebugMotion, 1001);
-
-    for (const def of networkComponentDefs) {
-      this.world.registerComponent(def.component, def.id);
-    }
+    this.world.registerComponent(DebugMotion);
   }
 
   private registerSystems(): void {
@@ -225,24 +141,31 @@ export class UniverseRoom extends Room {
         this.markEntityRemoved(networked.id);
       });
 
-    for (const def of networkComponentDefs) {
-      this.registerComponentReplicationSystem(def);
+    for (const ComponentClass of SERIALIZABLE_COMPONENTS) {
+      this.registerComponentReplicationSystem(ComponentClass);
     }
   }
 
   private registerComponentReplicationSystem(
-    def: ReplicatedComponentDef<Component>,
+    ComponentClass: SerializableComponentClass,
   ): void {
+    const componentType = this.world.getComponentType(ComponentClass);
+
     this.world
-      .system(`Replicate${def.name}`)
+      .system(`Replicate${ComponentClass.name}`)
       .phase(this.replicationPhase)
-      .requires(Networked, def.component)
-      .update(def.component, [Networked], (component, [networked]) => {
+      .requires(Networked, ComponentClass)
+      .update(ComponentClass, [Networked], (component, [networked]) => {
         if (!networked) return;
-        this.markComponentPatch(networked.id, def.id, def.serialize(component));
+        const serializable = component as Component & ISerializable;
+        this.markComponentPatch(
+          networked.id,
+          componentType,
+          serializable.serialize(),
+        );
       })
-      .exit([Networked, def.component], (_entity, [networked]) => {
-        this.markComponentRemoved(networked.id, def.id);
+      .exit([Networked, ComponentClass], (_entity, [networked]) => {
+        this.markComponentRemoved(networked.id, componentType);
       });
   }
 
@@ -305,13 +228,14 @@ export class UniverseRoom extends Room {
   private serializeEntity(entity: Entity): ComponentSnapshot[] {
     const components: ComponentSnapshot[] = [];
 
-    for (const def of networkComponentDefs) {
-      const component = entity.get(def.component);
+    for (const ComponentClass of SERIALIZABLE_COMPONENTS) {
+      const component = entity.get(ComponentClass);
       if (!component) continue;
+      const serializable = component as Component & ISerializable;
 
       components.push({
-        componentId: def.id,
-        data: def.serialize(component),
+        componentType: component.type,
+        data: serializable.serialize(),
       });
     }
 
@@ -332,32 +256,32 @@ export class UniverseRoom extends Room {
 
   private markComponentPatch(
     id: NetworkEntityId,
-    componentId: NetworkComponentId,
+    componentType: ComponentType,
     data: Record<string, unknown>,
   ): void {
     if (this.removed.has(id)) return;
 
     const removedComponents = this.componentRemoved.get(id);
-    removedComponents?.delete(componentId);
+    removedComponents?.delete(componentType);
     if (removedComponents?.size === 0) this.componentRemoved.delete(id);
 
     const entityPatches = this.patches.get(id) ?? new Map();
-    entityPatches.set(componentId, { componentId, data });
+    entityPatches.set(componentType, { componentType, data });
     this.patches.set(id, entityPatches);
   }
 
   private markComponentRemoved(
     id: NetworkEntityId,
-    componentId: NetworkComponentId,
+    componentType: ComponentType,
   ): void {
     if (this.removed.has(id) || this.spawned.has(id)) return;
 
     const entityPatches = this.patches.get(id);
-    entityPatches?.delete(componentId);
+    entityPatches?.delete(componentType);
     if (entityPatches?.size === 0) this.patches.delete(id);
 
     const removedComponents = this.componentRemoved.get(id) ?? new Set();
-    removedComponents.add(componentId);
+    removedComponents.add(componentType);
     this.componentRemoved.set(id, removedComponents);
   }
 
@@ -380,9 +304,9 @@ export class UniverseRoom extends Room {
         components: [...components.values()],
       })),
       componentRemoved: [...this.componentRemoved].map(
-        ([id, componentIds]) => ({
+        ([id, componentTypes]) => ({
           id,
-          componentIds: [...componentIds],
+          componentTypes: [...componentTypes],
         }),
       ),
     };

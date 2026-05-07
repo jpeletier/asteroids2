@@ -1,4 +1,5 @@
 export type { Point } from './Point';
+export type { ISerializable } from './ISerializable';
 export { Networked } from './Networked';
 export { Position } from './Position';
 export { Rotation } from './Rotation';

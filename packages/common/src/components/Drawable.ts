@@ -1,4 +1,5 @@
 import { Component } from '@vworlds/vecs';
+import type { ISerializable } from './ISerializable';
 
 export interface DrawContext {
   globalAlpha: number;
@@ -32,10 +33,14 @@ export interface Statement {
   fn: (ctx: DrawContext) => void;
 }
 
-export class Drawable extends Component {
+export class Drawable extends Component implements ISerializable {
   zIndex = 0;
   _statements: Statement[] = [];
   _sortedFns: ((ctx: DrawContext) => void)[] | undefined = undefined;
+
+  serialize(): Record<string, unknown> {
+    return { zIndex: this.zIndex };
+  }
 
   addStatement(
     key: unknown,
