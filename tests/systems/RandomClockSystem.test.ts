@@ -19,17 +19,12 @@ function tick() {
 describe('RandomClockSystem', () => {
   it('calls effectFunc when nextTick is in the past and state is playing', () => {
     let called = false;
-    const clock = new RandomClock();
-    clock.effectFunc = () => {
-      called = true;
-    };
-    clock.nextTick = Date.now() - 1000;
-    world
-      .entity()
-      .set(RandomClock, {
-        effectFunc: clock.effectFunc,
-        nextTick: clock.nextTick,
-      });
+    world.entity().set(RandomClock, {
+      effectFunc: () => {
+        called = true;
+      },
+      nextTick: Date.now() - 1000,
+    });
     tick();
     expect(called).toBe(true);
   });
@@ -62,31 +57,24 @@ describe('RandomClockSystem', () => {
   });
 
   it('reschedules nextTick after firing (schedule() is called inside effectFunc via clock)', () => {
-    // After firing, effectFunc calls clock.schedule() which sets nextTick to future.
-    // We verify by checking that a second tick does NOT call effectFunc again immediately.
+    // Verify a second tick does not call effectFunc again immediately.
     let callCount = 0;
     const past = Date.now() - 1000;
-    // Use set() with a plain object — schedule() won't be called; set nextTick manually.
-    // The RandomClock component's schedule() is called from effectFunc chain,
-    // but in this test effectFunc just increments a counter and calls clock.schedule().
-    const clock = new RandomClock();
+    const entity = world.entity().set(RandomClock, {
+      minWait: 10000,
+      maxWait: 20000,
+      nextTick: past,
+    });
+    const clock = entity.get(RandomClock);
+    if (!clock) throw new Error('RandomClock component was not attached');
     clock.effectFunc = () => {
       callCount++;
       clock.schedule();
     };
-    // Use public setters so schedule() inside effectFunc picks a future time.
-    clock.minWait = 10000;
-    clock.maxWait = 20000;
-    clock.nextTick = past; // override back to past so the first tick fires
-    world
-      .entity()
-      .set(RandomClock, {
-        effectFunc: clock.effectFunc,
-        nextTick: clock.nextTick,
-      });
+    clock.nextTick = past; // override scheduled time so the first tick fires
     tick();
     expect(callCount).toBe(1);
-    // Second tick: if schedule() ran, nextTick is now in the future, so no second call.
-    // (The system body was already copied via set(), so we test indirectly.)
+    tick();
+    expect(callCount).toBe(1);
   });
 });
