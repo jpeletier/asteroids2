@@ -2,6 +2,8 @@
 
 A fast-paced, two-player cooperative Asteroids-style game.
 
+**[Play the latest version](https://vworlds.github.io/spacerocks/dev/)**
+
 ## Features
 
 - **Local Co-op**: Play with two players on one keyboard.
@@ -33,9 +35,12 @@ npm run test       # run Vitest smoke tests
 
 ## GitHub Pages previews
 
-Pushes and same-repository PRs publish the built game to the `gh-pages` branch.
+Pushes and same-repository PRs automatically build and publish the game to GitHub Pages.
 
-- Branch preview: `https://<owner>.github.io/<repo>/<branch>/`
-- Pull request preview: `https://<owner>.github.io/<repo>/pr-<number>/`
+- **Latest (dev)**: https://vworlds.github.io/spacerocks/dev/
+- **Branch preview**: `https://vworlds.github.io/spacerocks/<branch>/`
+- **PR preview**: `https://vworlds.github.io/spacerocks/pr-<number>/`
 
-Enable GitHub Pages in the repository settings with source branch `gh-pages` and folder `/`.
+When a PR is opened, a bot comment is automatically posted with a direct link to play that PR's build.
+
+Enable GitHub Pages in repository settings with source branch `gh-pages` and folder `/`.
