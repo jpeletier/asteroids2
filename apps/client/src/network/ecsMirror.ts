@@ -1,9 +1,11 @@
 import { Client, type Room } from 'colyseus.js';
 import {
+  ECS_DELTA_MESSAGE,
   ECS_SNAPSHOT_MESSAGE,
   NetworkComponentId,
   UNIVERSE_ROOM_NAME,
   type ComponentSnapshot,
+  type EcsDeltaMessage,
   type EcsSnapshotMessage,
 } from '@spacerocks/common';
 import { world } from '../world';
@@ -29,6 +31,7 @@ export async function connectEcsMirror(): Promise<void> {
   try {
     room = await client.joinOrCreate(UNIVERSE_ROOM_NAME);
     room.onMessage<EcsSnapshotMessage>(ECS_SNAPSHOT_MESSAGE, applySnapshot);
+    room.onMessage<EcsDeltaMessage>(ECS_DELTA_MESSAGE, applyDelta);
     room.onLeave(() => {
       room = null;
     });
@@ -53,6 +56,32 @@ function applySnapshot(snapshot: EcsSnapshotMessage): void {
     for (const component of entitySnapshot.components) {
       applyComponent(entity, component);
     }
+  }
+}
+
+function applyDelta(delta: EcsDeltaMessage): void {
+  for (const entityId of delta.spawned) {
+    world.getOrCreateEntity(entityId);
+  }
+
+  for (const patch of delta.patches) {
+    const entity = world.getOrCreateEntity(patch.id);
+    for (const component of patch.components) {
+      applyComponent(entity, component);
+    }
+  }
+
+  for (const removal of delta.componentRemoved) {
+    const entity = world.entity(removal.id);
+    if (!entity) continue;
+
+    for (const componentId of removal.componentIds) {
+      removeComponent(entity, componentId);
+    }
+  }
+
+  for (const entityId of delta.removed) {
+    world.entity(entityId)?.destroy();
   }
 }
 
@@ -99,6 +128,38 @@ function applyComponent(
         width: getNumber(data, 'width', 2),
         height: getNumber(data, 'height', 2),
       });
+      break;
+  }
+}
+
+function removeComponent(
+  entity: ReturnType<typeof world.getOrCreateEntity>,
+  componentId: NetworkComponentId,
+): void {
+  switch (componentId) {
+    case NetworkComponentId.Position:
+      entity.remove(Position);
+      break;
+    case NetworkComponentId.Rotation:
+      entity.remove(Rotation);
+      break;
+    case NetworkComponentId.Drawable:
+      entity.remove(Drawable);
+      break;
+    case NetworkComponentId.Arc:
+      entity.remove(Arc);
+      break;
+    case NetworkComponentId.Shape:
+      entity.remove(Shape);
+      break;
+    case NetworkComponentId.StrokeStyle:
+      entity.remove(StrokeStyle);
+      break;
+    case NetworkComponentId.FillStyle:
+      entity.remove(FillStyle);
+      break;
+    case NetworkComponentId.FilledRect:
+      entity.remove(FilledRect);
       break;
   }
 }
