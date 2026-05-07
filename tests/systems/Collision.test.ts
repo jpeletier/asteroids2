@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase, gameState } from '../../src/world';
+import { world, updatePhase, gameState } from '@src/world';
 import {
   BIT_PLAYER,
   BIT_ASTEROID,
@@ -9,7 +9,7 @@ import {
   BIT_PICKUP,
   BIT_BOOMERANG,
   registerCollisionEffect,
-} from '../../src/systems/Collision';
+} from '@src/systems/Collision';
 import {
   Position,
   Collider,
@@ -22,7 +22,7 @@ import {
   Pickup,
   Boomerang,
   BoomerangWeapon,
-} from '../../src/components/index';
+} from '@src/components';
 import {
   CAT_PLAYER,
   CAT_ASTEROID,
@@ -34,7 +34,7 @@ import {
   SCORING,
   ENTITY_CONFIG,
   SHIELD_DAMAGE,
-} from '../../src/constants';
+} from '@src/constants';
 
 beforeAll(() => world.start());
 afterEach(() => {
@@ -70,14 +70,11 @@ describe('Collision – system skips when not playing', () => {
   it('does not fire collision effects when state is lose', () => {
     gameState.state = 'lose';
     let called = false;
-    const a = world
-      .entity()
-      .set(Position, place())
-      .set(Collider, {
-        radius: 10,
-        category: CAT_PLAYER_BULLET,
-        mask: CAT_ASTEROID,
-      });
+    const a = world.entity().set(Position, place()).set(Collider, {
+      radius: 10,
+      category: CAT_PLAYER_BULLET,
+      mask: CAT_ASTEROID,
+    });
     world
       .entity()
       .set(Position, place())

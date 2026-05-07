@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
-import { world, renderPhase, renderCtx, canvasSize } from '../../src/world';
-import '../../src/systems/Render';
-import { Position, Drawable, Rotation } from '../../src/components/index';
+import { world, renderPhase, renderCtx, canvasSize } from '@src/world';
+import '@src/systems/Render';
+import { Position, Drawable, Rotation } from '@src/components';
 
 const mockCtx = {
   fillStyle: '',

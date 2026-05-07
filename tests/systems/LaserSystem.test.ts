@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase, gameState } from '../../src/world';
-import '../../src/systems/LaserSystem';
+import { world, updatePhase, gameState } from '@src/world';
+import '@src/systems/LaserSystem';
 import {
   Position,
   LaserWeapon,
@@ -9,12 +9,8 @@ import {
   Asteroid,
   Alien,
   DefaultWeapon,
-} from '../../src/components/index';
-import {
-  CAT_ASTEROID,
-  CAT_PLAYER_BULLET,
-  CAT_ENEMY,
-} from '../../src/constants';
+} from '@src/components';
+import { CAT_ASTEROID, CAT_PLAYER_BULLET, CAT_ENEMY } from '@src/constants';
 
 beforeAll(() => world.start());
 afterEach(() => {

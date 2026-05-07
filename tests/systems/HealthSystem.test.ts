@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase } from '../../src/world';
-import '../../src/systems/HealthSystem';
-import { Health } from '../../src/components/index';
+import { world, updatePhase } from '@src/world';
+import '@src/systems/HealthSystem';
+import { Health } from '@src/components';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

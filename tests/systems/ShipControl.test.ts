@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase, keys } from '../../src/world';
-import '../../src/systems/ShipControl';
-import { ShipInput, Rotation, Thrust } from '../../src/components/index';
-import { ENTITY_CONFIG } from '../../src/constants';
+import { world, updatePhase, keys } from '@src/world';
+import '@src/systems/ShipControl';
+import { ShipInput, Rotation, Thrust } from '@src/components';
+import { ENTITY_CONFIG } from '@src/constants';
 
 beforeAll(() => world.start());
 afterEach(() => {

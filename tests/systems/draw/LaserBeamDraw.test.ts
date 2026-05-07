@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
-import { world, renderPhase } from '../../../src/world';
-import '../../../src/systems/draw/LaserBeamDraw';
-import { Drawable, LaserWeapon } from '../../../src/components/index';
+import { world, renderPhase } from '@src/world';
+import '@src/systems/draw/LaserBeamDraw';
+import { Drawable, LaserWeapon } from '@src/components';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

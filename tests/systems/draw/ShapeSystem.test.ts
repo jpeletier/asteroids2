@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
-import { world, renderPhase } from '../../../src/world';
-import '../../../src/systems/draw/ShapeSystem';
-import { Drawable, Shape } from '../../../src/components/index';
+import { world, renderPhase } from '@src/world';
+import '@src/systems/draw/ShapeSystem';
+import { Drawable, Shape } from '@src/components';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

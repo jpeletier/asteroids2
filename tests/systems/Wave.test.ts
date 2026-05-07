@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase, gameState, canvasSize } from '../../src/world';
-import '../../src/systems/Wave';
-import { Asteroid, Alien } from '../../src/components/index';
+import { world, updatePhase, gameState, canvasSize } from '@src/world';
+import '@src/systems/Wave';
+import { Asteroid, Alien } from '@src/components';
 
 beforeAll(() => {
   canvasSize.width = 800;

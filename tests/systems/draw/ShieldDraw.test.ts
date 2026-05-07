@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
-import { world, renderPhase } from '../../../src/world';
-import '../../../src/systems/draw/ShieldDraw';
-import { Drawable, Shield } from '../../../src/components/index';
-import { ENTITY_CONFIG } from '../../../src/constants';
+import { world, renderPhase } from '@src/world';
+import '@src/systems/draw/ShieldDraw';
+import { Drawable, Shield } from '@src/components';
+import { ENTITY_CONFIG } from '@src/constants';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

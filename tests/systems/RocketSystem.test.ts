@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase } from '../../src/world';
-import '../../src/systems/RocketSystem';
+import { world, updatePhase } from '@src/world';
+import '@src/systems/RocketSystem';
 import {
   Position,
   Velocity,
@@ -8,8 +8,8 @@ import {
   Rocket,
   Alien,
   Asteroid,
-} from '../../src/components/index';
-import { ENTITY_CONFIG } from '../../src/constants';
+} from '@src/components';
+import { ENTITY_CONFIG } from '@src/constants';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

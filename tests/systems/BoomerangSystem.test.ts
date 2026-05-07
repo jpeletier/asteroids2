@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase } from '../../src/world';
-import '../../src/systems/BoomerangSystem';
+import { world, updatePhase } from '@src/world';
+import '@src/systems/BoomerangSystem';
 import {
   Position,
   Velocity,
   Boomerang,
   BoomerangWeapon,
   DefaultWeapon,
-} from '../../src/components/index';
-import { ENTITY_CONFIG } from '../../src/constants';
+} from '@src/components';
+import { ENTITY_CONFIG } from '@src/constants';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
-import { world, renderPhase, gameState, initDOM } from '../../src/world';
-import '../../src/systems/UI';
+import { world, renderPhase, gameState, initDOM } from '@src/world';
+import '@src/systems/UI';
 
 // Minimal canvas 2D context mock
 const mockCtx = {

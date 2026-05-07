@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase, gameState } from '../../src/world';
-import '../../src/systems/RandomClockSystem';
-import { RandomClock } from '../../src/components/index';
+import { world, updatePhase, gameState } from '@src/world';
+import '@src/systems/RandomClockSystem';
+import { RandomClock } from '@src/components';
 
 beforeAll(() => world.start());
 afterEach(() => {

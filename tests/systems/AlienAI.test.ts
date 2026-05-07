@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase } from '../../src/world';
-import '../../src/systems/AlienAI';
+import { world, updatePhase } from '@src/world';
+import '@src/systems/AlienAI';
 import {
   Position,
   Velocity,
@@ -9,7 +9,7 @@ import {
   Asteroid,
   Player,
   Bullet,
-} from '../../src/components/index';
+} from '@src/components';
 
 beforeAll(() => world.start());
 afterEach(() => world.clearAllEntities());

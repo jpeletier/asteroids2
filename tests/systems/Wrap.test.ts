@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
-import { world, updatePhase, canvasSize } from '../../src/world';
-import '../../src/systems/Wrap';
-import { Position, Wraps } from '../../src/components/index';
+import { world, updatePhase, canvasSize } from '@src/world';
+import '@src/systems/Wrap';
+import { Position, Wraps } from '@src/components';
 
 beforeAll(() => {
   canvasSize.width = 800;
