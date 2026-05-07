@@ -1,5 +1,5 @@
 import { Component } from '@vworlds/vecs';
-export class StrokeStyle extends Component {
+
+export class FillStyle extends Component {
   style = '#fff';
-  lineWidth = 2;
 }

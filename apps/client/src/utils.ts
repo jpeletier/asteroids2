@@ -1,4 +1,5 @@
-import type { Star, Point } from './types';
+import type { Point } from '@spacerocks/common';
+import type { Star } from './types';
 
 export function distToSegment(p: Point, v: Point, w: Point): number {
   const l2 = Math.pow(v.x - w.x, 2) + Math.pow(v.y - w.y, 2);

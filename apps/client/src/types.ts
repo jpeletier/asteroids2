@@ -14,8 +14,3 @@ export interface Star {
   size: number;
   opacity: number;
 }
-
-export interface Point {
-  x: number;
-  y: number;
-}

@@ -18,7 +18,7 @@ import {
   CAT_BOOMERANG,
   ENTITY_CONFIG,
 } from '../constants';
-import type { Point } from '../types';
+import type { Point } from '@spacerocks/common';
 
 const ASTEROID_COLORS = ['#aaa', '#888', '#bbb', '#999', '#777'] as const;
 const ASTEROID_RADII: Record<number, number> = { 1: 10, 2: 20, 3: 40 };

@@ -41,7 +41,7 @@ function replicatedComponent<T extends Component>(
   };
 }
 
-const replicatedComponents = [
+const networkComponentDefs = [
   replicatedComponent({
     id: NetworkComponentId.Position,
     component: Position,
@@ -148,7 +148,7 @@ export class UniverseRoom extends Room {
     this.world.registerComponent(Networked, 1000);
     this.world.registerComponent(DebugMotion, 1001);
 
-    for (const def of replicatedComponents) {
+    for (const def of networkComponentDefs) {
       this.world.registerComponent(def.component, def.id);
     }
   }
@@ -235,7 +235,7 @@ export class UniverseRoom extends Room {
   private serializeEntity(entity: Entity): ComponentSnapshot[] {
     const components: ComponentSnapshot[] = [];
 
-    for (const def of replicatedComponents) {
+    for (const def of networkComponentDefs) {
       const component = entity.get(def.component);
       if (!component) continue;
 
