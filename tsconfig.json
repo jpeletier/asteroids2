@@ -9,6 +9,10 @@
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": true,
     "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"]
+    },
     "skipLibCheck": true,
     "noEmit": true
   },
