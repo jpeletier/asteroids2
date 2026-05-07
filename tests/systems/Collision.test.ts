@@ -241,7 +241,7 @@ describe('Collision – player bullet vs alien', () => {
 
 describe('Collision – enemy bullet vs player', () => {
   it('damages player health when no shield', () => {
-    world
+    const bullet = world
       .entity()
       .set(Position, place())
       .set(Collider, {
@@ -260,8 +260,13 @@ describe('Collision – enemy bullet vs player', () => {
       })
       .set(Player, { playerId: 0 })
       .set(Health, { hp: 100, maxHp: 100, healthBarTimer: 0 });
+    let bulletDead = false;
+    bullet.events.on('destroy', () => {
+      bulletDead = true;
+    });
     tick();
     expect(player.get(Health)!.hp).toBe(90);
+    expect(bulletDead).toBe(true);
   });
 
   it('damages shield time instead of hp when shield is active', () => {
