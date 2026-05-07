@@ -4,25 +4,37 @@
   "description": "A simple game",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11",
-    "vitest": "^1.6.0",
     "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.0.0",
+    "husky": "^9.1.7",
     "jsdom": "^24.0.0",
-    "eslint": "^8.57.0",
-    "@typescript-eslint/parser": "^7.8.0",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.2.5",
-    "eslint-config-prettier": "^9.1.0"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^5.2.11",
+    "vitest": "^1.6.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "@vworlds/vecs": "^1.0.12"
   }
 }

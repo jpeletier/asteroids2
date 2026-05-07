@@ -1,0 +1,63 @@
+name: Pages Preview
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: pages-preview-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Choose preview folder
+        id: preview
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            folder="pr-${{ github.event.number }}"
+          else
+            folder="${GITHUB_REF_NAME//\//-}"
+          fi
+
+          echo "folder=$folder" >> "$GITHUB_OUTPUT"
+          echo "url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/$folder/" >> "$GITHUB_OUTPUT"
+
+      - name: Add .nojekyll
+        run: touch dist/.nojekyll
+
+      - name: Deploy to GitHub Pages branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist
+          target-folder: ${{ steps.preview.outputs.folder }}
+          clean: false
+
+      - name: Comment preview URL
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pages-preview
+          message: |
+            GitHub Pages preview: ${{ steps.preview.outputs.url }}

@@ -5,3 +5,5 @@ dist/
 .env
 coverage/
 *.tsbuildinfo
+.claude/settings.local.json
+.worktrees

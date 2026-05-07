@@ -1,4 +1,7 @@
-import { GameEngine } from './engine';
+import { world, initDOM } from './world';
+import { initGame } from './game';
+import { setInitGameCallback } from './systems/Collision';
+import { initCheats } from './cheats';
 
 window.addEventListener('DOMContentLoaded', () => {
   const canvasEl = document.getElementById('gameCanvas');
@@ -10,8 +13,20 @@ window.addEventListener('DOMContentLoaded', () => {
     throw new Error('Required DOM elements not found');
   }
 
-  const canvas = canvasEl as HTMLCanvasElement;
+  initDOM(canvasEl as HTMLCanvasElement, scoreEl, waveEl, msgEl);
+  setInitGameCallback(initGame);
+  initCheats();
 
-  const game = new GameEngine(canvas, scoreEl, waveEl, msgEl);
-  game.start();
+  // Start world after all systems (imported via game.ts → systems/index) are registered
+  world.start();
+
+  initGame();
+
+  let last = 0;
+  function loop(now: number): void {
+    world.progress(now, now - last);
+    last = now;
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 });
