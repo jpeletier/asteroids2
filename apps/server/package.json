@@ -7,10 +7,15 @@
     "dev": "tsx src/index.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@spacerocks/common": "file:../../packages/common"
+    "@spacerocks/common": "file:../../packages/common",
+    "@vworlds/vecs": "*",
+    "colyseus": "^0.16.5",
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.3"
   },
   "devDependencies": {
     "tsx": "^4.19.2"

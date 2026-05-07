@@ -1,4 +1,5 @@
 import { World } from '@vworlds/vecs';
+import { CLIENT_ENTITY_ID_START } from '@spacerocks/common';
 import {
   Position,
   Velocity,
@@ -43,6 +44,7 @@ import {
 import { initStars } from './utils';
 
 export const world = new World();
+world.setEntityIdRange(CLIENT_ENTITY_ID_START);
 
 // ── Register all components ───────────────────────────────────────────────
 world.registerComponent(Position);

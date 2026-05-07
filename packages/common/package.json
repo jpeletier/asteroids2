@@ -8,6 +8,10 @@
   "scripts": {
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@vworlds/vecs": "*"
   }
 }

@@ -2,6 +2,7 @@ import { world, initDOM } from './world';
 import { initGame } from './game';
 import { setInitGameCallback } from './systems/Collision';
 import { initCheats } from './cheats';
+import { connectEcsMirror } from './network/ecsMirror';
 
 window.addEventListener('DOMContentLoaded', () => {
   const canvasEl = document.getElementById('gameCanvas');
@@ -21,6 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
   world.start();
 
   initGame();
+  void connectEcsMirror();
 
   let last = 0;
   function loop(now: number): void {
