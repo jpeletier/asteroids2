@@ -14,17 +14,13 @@ function tick() {
 }
 
 describe('AlphaSystem', () => {
-  it('adds alpha draw statement when entity gains Drawable + Alpha', () => {
+  it('adds alpha and restore draw statements when entity gains Drawable + Alpha', () => {
     const e = world.entity().add(Drawable).set(Alpha, { value: 0.5 });
     tick();
-    const keys = e.get(Drawable)!._statements.map((s) => s.key);
+    const statements = e.get(Drawable)!._statements;
+    const keys = statements.map((s) => s.key);
     expect(keys).toContain(Alpha);
-  });
-
-  it('adds a restore draw statement (two statements total)', () => {
-    const e = world.entity().add(Drawable).set(Alpha, { value: 0.5 });
-    tick();
-    expect(e.get(Drawable)!._statements.length).toBeGreaterThanOrEqual(2);
+    expect(statements.length).toBeGreaterThanOrEqual(2);
   });
 
   it('alpha statement sets globalAlpha on the context', () => {
