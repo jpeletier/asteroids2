@@ -1,0 +1,18 @@
+{
+  "name": "@spacerocks/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@spacerocks/common": "file:../../packages/common"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}

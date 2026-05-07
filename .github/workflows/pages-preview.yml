@@ -28,7 +28,7 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run build
+      - run: npm run build -w @spacerocks/client
 
       - name: Choose preview folder
         id: preview
@@ -44,13 +44,13 @@ jobs:
           echo "url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/$folder/" >> "$GITHUB_OUTPUT"
 
       - name: Add .nojekyll
-        run: touch dist/.nojekyll
+        run: touch apps/client/dist/.nojekyll
 
       - name: Deploy to GitHub Pages branch
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist
+          folder: apps/client/dist
           target-folder: ${{ steps.preview.outputs.folder }}
           clean: false
 
