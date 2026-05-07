@@ -88,6 +88,7 @@ export function setInitGameCallback(fn: () => void): void {
 }
 
 function triggerLose(): void {
+  if (gameState.state !== 'playing') return;
   gameState.state = 'lose';
   if (msgEl) msgEl.innerText = 'GAME OVER';
   setTimeout(() => {

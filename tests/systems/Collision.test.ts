@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
 import { world, updatePhase, gameState } from '@src/world';
 import {
   BIT_PLAYER,
@@ -9,6 +9,7 @@ import {
   BIT_PICKUP,
   BIT_BOOMERANG,
   registerCollisionEffect,
+  setInitGameCallback,
 } from '@src/systems/Collision';
 import {
   Position,
@@ -41,6 +42,8 @@ afterEach(() => {
   world.clearAllEntities();
   gameState.score = 0;
   gameState.state = 'playing';
+  setInitGameCallback(() => {});
+  vi.useRealTimers();
 });
 
 function tick() {
@@ -292,6 +295,41 @@ describe('Collision – enemy bullet vs player', () => {
     expect(player.get(Health)!.hp).toBe(100);
     const shieldTime = player.get(Shield)?.shieldTime;
     expect(shieldTime).toBe(2400 - SHIELD_DAMAGE.BULLET);
+  });
+
+  it('schedules one reset when multiple lethal collisions happen in one tick', () => {
+    vi.useFakeTimers();
+    const initGame = vi.fn();
+    setInitGameCallback(initGame);
+
+    for (let i = 0; i < 2; i++) {
+      world
+        .entity()
+        .set(Position, place())
+        .set(Collider, {
+          radius: 5,
+          category: CAT_ENEMY_BULLET,
+          mask: CAT_PLAYER,
+        })
+        .set(Bullet, { ownerType: 'alien' });
+    }
+
+    world
+      .entity()
+      .set(Position, place())
+      .set(Collider, {
+        radius: 12,
+        category: CAT_PLAYER,
+        mask: CAT_ENEMY_BULLET,
+      })
+      .set(Player, { playerId: 0 })
+      .set(Health, { hp: 10, maxHp: 100, healthBarTimer: 0 });
+
+    tick();
+    expect(gameState.state).toBe('lose');
+
+    vi.advanceTimersByTime(3000);
+    expect(initGame).toHaveBeenCalledTimes(1);
   });
 });
 
