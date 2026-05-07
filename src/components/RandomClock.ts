@@ -6,13 +6,17 @@ export class RandomClock extends Component {
   effectFunc: () => void = () => {};
   nextTick = 0;
 
-  get minWait(): number { return this._minWait; }
+  get minWait(): number {
+    return this._minWait;
+  }
   set minWait(v: number) {
     this._minWait = v;
     this.schedule();
   }
 
-  get maxWait(): number { return this._maxWait; }
+  get maxWait(): number {
+    return this._maxWait;
+  }
   set maxWait(v: number) {
     this._maxWait = v;
     this.schedule();
@@ -21,7 +25,8 @@ export class RandomClock extends Component {
   schedule(): void {
     if (this._minWait > 0 && this._maxWait > 0) {
       const now = Date.now();
-      this.nextTick = now + this._minWait + Math.random() * (this._maxWait - this._minWait);
+      this.nextTick =
+        now + this._minWait + Math.random() * (this._maxWait - this._minWait);
     }
   }
 }
