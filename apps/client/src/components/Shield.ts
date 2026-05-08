@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class Shield extends Component {
+export class Shield {
   shieldTime = 0;
 }

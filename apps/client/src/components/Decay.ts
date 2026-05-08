@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class Decay extends Component {
+export class Decay {
   life = 1;
   decay = 0.02;
 }

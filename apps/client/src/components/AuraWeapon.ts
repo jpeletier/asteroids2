@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class AuraWeapon extends Component {
+export class AuraWeapon {
   shots = 0;
 }

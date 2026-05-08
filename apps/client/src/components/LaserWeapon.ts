@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class LaserWeapon extends Component {
+export class LaserWeapon {
   shots = 0;
   firing = false;
   timer = 0;

@@ -1,6 +1,4 @@
-import { Component } from '@vworlds/vecs';
-
-export class RandomClock extends Component {
+export class RandomClock {
   private _minWait = 0;
   private _maxWait = 0;
   effectFunc: () => void = () => {};

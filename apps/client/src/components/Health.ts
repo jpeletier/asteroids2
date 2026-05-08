@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class Health extends Component {
+export class Health {
   hp = 100;
   maxHp = 100;
   healthBarTimer = 0;

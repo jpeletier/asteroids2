@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
+  "//": "Leave @vworlds/vecs dependency set to * so this picks up the root package.json's value",
   "dependencies": {
     "@spacerocks/common": "file:../../packages/common",
     "@vworlds/vecs": "*",

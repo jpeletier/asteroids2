@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { Component } from '@vworlds/vecs';
 
 import { Position, SHARED_COMPONENT_TYPES, createWorld } from '../src/index';
 
-class LocalComponent extends Component {}
+class LocalComponent {}
 
 describe('createWorld', () => {
   it('registers shared component types before local component ids', () => {

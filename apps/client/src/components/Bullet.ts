@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
 import type { OwnerType } from '../types';
-export class Bullet extends Component {
+export class Bullet {
   ownerType: OwnerType = 'player';
 }

@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class Alien extends Component {
+export class Alien {
   shootCooldown = 60;
 }

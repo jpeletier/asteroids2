@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class Thrust extends Component {
+export class Thrust {
   force = 0;
   active = false;
 }

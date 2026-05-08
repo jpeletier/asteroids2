@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class Collider extends Component {
+export class Collider {
   radius = 10;
   category = 0;
   mask = 0;

@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class Rocket extends Component {
+export class Rocket {
   straightTimer = 0;
 }

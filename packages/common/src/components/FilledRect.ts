@@ -1,7 +1,6 @@
-import { Component } from '@vworlds/vecs';
 import type { ISerializable } from './ISerializable';
 
-export class FilledRect extends Component implements ISerializable {
+export class FilledRect implements ISerializable {
   width = 2;
   height = 2;
 

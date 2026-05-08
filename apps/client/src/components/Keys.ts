@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class Keys extends Component {
+export class Keys {
   state: Record<string, boolean> = {};
 }

@@ -1,7 +1,6 @@
-import { Component } from '@vworlds/vecs';
 import type { ISerializable } from './ISerializable';
 
-export class StrokeStyle extends Component implements ISerializable {
+export class StrokeStyle implements ISerializable {
   style = '#fff';
   lineWidth = 2;
 

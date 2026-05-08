@@ -1,7 +1,6 @@
-import { Component } from '@vworlds/vecs';
 import type { ISerializable } from './ISerializable';
 
-export class Position extends Component implements ISerializable {
+export class Position implements ISerializable {
   x = 0;
   y = 0;
 

@@ -1,4 +1,4 @@
-import { World, type Component } from '@vworlds/vecs';
+import { World, type Component, type ComponentClass } from '@vworlds/vecs';
 import {
   Arc,
   Drawable,
@@ -12,7 +12,7 @@ import {
   StrokeStyle,
 } from '../components';
 
-type SharedComponentTypeEntry = readonly [typeof Component, number];
+type SharedComponentTypeEntry = readonly [ComponentClass, number];
 
 export const SHARED_COMPONENT_TYPES = [
   [Position, 0],
@@ -28,9 +28,9 @@ export const SHARED_COMPONENT_TYPES = [
 
 export type ComponentType = number;
 
-export type SerializableComponentClass = typeof Component & {
-  prototype: Component & ISerializable;
-};
+export type SerializableComponentClass = ComponentClass<
+  Component & ISerializable
+>;
 
 export const SERIALIZABLE_COMPONENTS = SHARED_COMPONENT_TYPES.map(
   ([ComponentClass]) => ComponentClass,

@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class HealthPickup extends Component {
+export class HealthPickup {
   amount = 0;
 }

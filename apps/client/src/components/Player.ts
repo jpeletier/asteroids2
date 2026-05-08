@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class Player extends Component {
+export class Player {
   playerId: 0 | 1 = 0;
 }

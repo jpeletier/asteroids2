@@ -7,10 +7,10 @@ world
   .system('Render')
   .requires(Position, Drawable)
   .phase(renderPhase)
-  .sort([Drawable], ([a], [b]) => {
+  .sort([Drawable], (entityA, [a], entityB, [b]) => {
     return a.zIndex !== b.zIndex
       ? a.zIndex - b.zIndex
-      : a.entity.eid - b.entity.eid;
+      : entityA.eid - entityB.eid;
   })
   .run(() => {
     ctx = renderCtx.ctx ?? null;

@@ -1,5 +1,3 @@
-import { Component } from '@vworlds/vecs';
-
-export class AngularVelocity extends Component {
+export class AngularVelocity {
   omega = 0;
 }

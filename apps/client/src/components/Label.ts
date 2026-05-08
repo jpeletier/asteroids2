@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class Label extends Component {
+export class Label {
   text = '';
   font = 'bold 14px Arial';
   textAlign: CanvasTextAlign = 'center';

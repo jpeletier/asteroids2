@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class RocketWeapon extends Component {
+export class RocketWeapon {
   shots = 0;
 }

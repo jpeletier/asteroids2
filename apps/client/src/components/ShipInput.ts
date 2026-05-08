@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class ShipInput extends Component {
+export class ShipInput {
   thrustKey = '';
   rotateLeftKey = '';
   rotateRightKey = '';

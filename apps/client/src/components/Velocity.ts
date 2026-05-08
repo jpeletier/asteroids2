@@ -1,5 +1,4 @@
-import { Component } from '@vworlds/vecs';
-export class Velocity extends Component {
+export class Velocity {
   vx = 0;
   vy = 0;
 }

@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
 import type { ISerializable } from './ISerializable';
 
 export interface DrawContext {
@@ -33,7 +32,7 @@ export interface Statement {
   fn: (ctx: DrawContext) => void;
 }
 
-export class Drawable extends Component implements ISerializable {
+export class Drawable implements ISerializable {
   zIndex = 0;
   _statements: Statement[] = [];
   _sortedFns: ((ctx: DrawContext) => void)[] | undefined = undefined;

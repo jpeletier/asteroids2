@@ -1,5 +1,5 @@
 import { Room, type Client } from 'colyseus';
-import { Component, type Entity } from '@vworlds/vecs';
+import type { Component, Entity } from '@vworlds/vecs';
 import {
   Arc,
   Drawable,
@@ -20,7 +20,7 @@ import {
 } from '@spacerocks/common';
 import { logger } from '../logger';
 
-class DebugMotion extends Component {
+class DebugMotion {
   centerX = 0;
   centerY = 0;
   orbitRadius = 0;
@@ -100,11 +100,11 @@ export class UniverseRoom extends Room {
         const seconds = now / 1000;
         this.world
           .filter([Position, DebugMotion])
-          .forEach([Position, DebugMotion], (_entity, [position, motion]) => {
+          .forEach([Position, DebugMotion], (entity, [position, motion]) => {
             const angle = seconds * motion.angularSpeed + motion.phase;
             position.x = motion.centerX + Math.cos(angle) * motion.orbitRadius;
             position.y = motion.centerY + Math.sin(angle) * motion.orbitRadius;
-            position.modified();
+            entity.modified(Position);
           });
       });
 
@@ -113,9 +113,9 @@ export class UniverseRoom extends Room {
       .phase(this.simulationPhase)
       .requires(Arc, StrokeStyle)
       .interval(2)
-      .each([StrokeStyle], (_entity, [strokeStyle]) => {
+      .each([StrokeStyle], (entity, [strokeStyle]) => {
         strokeStyle.style = randomDebugColor(strokeStyle.style);
-        strokeStyle.modified();
+        entity.modified(StrokeStyle);
       });
 
     this.registerReplicationSystems();
@@ -155,10 +155,10 @@ export class UniverseRoom extends Room {
       .system(`Replicate${ComponentClass.name}`)
       .phase(this.replicationPhase)
       .requires(Networked, ComponentClass)
-      .update(ComponentClass, (component) => {
+      .update(ComponentClass, (entity, component) => {
         const serializable = component as Component & ISerializable;
         this.markComponentPatch(
-          component.entity.eid,
+          entity.eid,
           componentType,
           serializable.serialize(),
         );
@@ -229,7 +229,7 @@ export class UniverseRoom extends Room {
       const serializable = component as Component & ISerializable;
 
       components.push({
-        componentType: component.type,
+        componentType: this.world.getComponentType(ComponentClass),
         data: serializable.serialize(),
       });
     }

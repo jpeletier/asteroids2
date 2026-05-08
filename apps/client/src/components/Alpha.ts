@@ -1,4 +1,3 @@
-import { Component } from '@vworlds/vecs';
-export class Alpha extends Component {
+export class Alpha {
   value = 1;
 }
